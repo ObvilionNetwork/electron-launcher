@@ -8,31 +8,31 @@
         "invalidValue": "* Неверное значение",
         "requiredValue": "* Обязательно для ввода",
         "userMigrated": {
-          "title": "Error During Login:<br>Invalid Credentials",
-          "desc": "You've attempted to login with a migrated account. Try again using the account email as the username."
+          "title": "Ошибка при входе:<br>Неверные данные",
+          "desc": "Вы попытались войти на перенесенную учетную запись. Повторите попытку, используя адрес электронной почты аккаунта в качестве имени пользователя."
         },
         "invalidCredentials": {
-          "title": "Error During Login:<br>Invalid Credentials",
-          "desc": "The email or password you've entered is incorrect. Please try again."
+          "title": "Ошибка при входе:<br>Неверные данные",
+          "desc": "Адрес электронной почты или пароль неверны. Пожалуйста, попробуйте ещё раз."
         },
         "rateLimit": {
-          "title": "Error During Login:<br>Too Many Attempts",
-          "desc": "There have been too many login attempts with this account recently. Please try again later."
+          "title": "Ошибка при входе:<br>Слишком много попыток",
+          "desc": "В последнее время было слишком много попыток входа в эту учетную запись. Пожалуйста, повторите попытку позже."
         },
         "noInternet": {
-          "title": "Error During Login:<br>No Internet Connection",
-          "desc": "You must be connected to the internet in order to login. Please connect and try again."
+          "title": "Ошибка при входе:<br>Нет Интернет соеденения",
+          "desc": "Вы должны быть подключены к Интернету, чтобы войти в систему. Пожалуйста, подключитесь и попробуйте еще раз."
         },
         "authDown": {
-          "title": "Error During Login:<br>Authentication Server Offline",
-          "desc": "Mojang's authentication server is currently offline or unreachable. Please wait a bit and try again. You can check the status of the server on <a href=\"https://help.mojang.com/\">Mojang's help portal</a>."
+          "title": "Ошибка при входе:<br>Сервер авторизации отключен",
+          "desc": "Сервер авторизации Mojang в настоящее время отключен или недоступен. Подождите немного и попробуйте еще раз. Вы можете проверить статус сервера на справочном портале Mojang <a href=\"https://help.mojang.com/\"></a>."
         },
         "notPaid": {
-          "title": "Error During Login:<br>Game Not Purchased",
-          "desc": "The account you are trying to login with has not purchased a copy of Minecraft.<br>You may purchase a copy on <a href=\"https://minecraft.net/\">Minecraft.net</a>"
+          "title": "Ошибка при входе:<br>Игра не приобретена",
+          "desc": "На учетной записи, с которой вы пытаетесь войти, не приобретена копия Minecraft. <br> Вы можете приобрести её на <a href=\"https://minecraft.net/\"> Minecraft.net</a>."
         },
         "unknown": {
-          "title": "Error During Login:<br>Unknown Error"
+          "title": "Ошибка при входе:<br>Неизвестная ошибка"
         }
       },
       "login": "АВТОРИЗАЦИЯ",
@@ -42,7 +42,7 @@
     },
     "landing": {
       "launch": {
-        "pleaseWait": "Пожалуйста подождите..."
+        "pleaseWait": "Пожалуйста, подождите..."
       }
     }
   }
