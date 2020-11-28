@@ -162,67 +162,50 @@ function formDisabled(v) {
  * error or Mojang error response.
  */
 function resolveError(err) {
-  // Mojang Response => err.cause | err.error | err.errorMessage
-  // Node error => err.code | err.message
-  if (err.cause != null && err.cause === 'UserMigratedException') {
-    return {
-      title: Lang.queryJS('login.error.userMigrated.title'),
-      desc: Lang.queryJS('login.error.userMigrated.desc'),
-    };
-  }
-  if (err.error != null) {
-    if (err.error === 'ForbiddenOperationException') {
-      if (err.errorMessage != null) {
-        if (err.errorMessage === 'Invalid credentials. Invalid username or password.') {
-          return {
-            title: Lang.queryJS('login.error.invalidCredentials.title'),
-            desc: Lang.queryJS('login.error.invalidCredentials.desc'),
-          };
-        } if (err.errorMessage === 'Invalid credentials.') {
-          return {
-            title: Lang.queryJS('login.error.rateLimit.title'),
-            desc: Lang.queryJS('login.error.rateLimit.desc'),
-          };
-        }
-      }
-    }
-  } else {
-    // Request errors (from Node).
-    if (err.code != null) {
-      if (err.code === 'ENOENT') {
-        // No Internet.
-        return {
-          title: Lang.queryJS('login.error.noInternet.title'),
-          desc: Lang.queryJS('login.error.noInternet.desc'),
-        };
-      } if (err.code === 'ENOTFOUND') {
-        // Could not reach server.
-        return {
-          title: Lang.queryJS('login.error.authDown.title'),
-          desc: Lang.queryJS('login.error.authDown.desc'),
-        };
-      }
-    }
-  }
-
-  if (err.message != null) {
-    if (err.message === 'NotPaidAccount') {
-      return {
-        title: Lang.queryJS('login.error.notPaid.title'),
-        desc: Lang.queryJS('login.error.notPaid.desc'),
+   if (err.message) {
+      if (err.message === 'User not found.') return {
+         title: Lang.queryJS('login.error.userMigrated.title'),
+         desc: Lang.queryJS('login.error.userMigrated.desc'),
       };
-    }
-    // Unknown error with request.
-    return {
-      title: Lang.queryJS('login.error.unknown.title'),
-      desc: err.message,
-    };
-  }
-  // Unknown Mojang error.
-  return {
-    title: err.error,
-    desc: err.errorMessage,
-  };
+
+      if (err.message === 'Invalid login data.') return {
+         title: Lang.queryJS('login.error.invalidCredentials.title'),
+         desc: Lang.queryJS('login.error.invalidCredentials.desc'),
+      };
+
+      if (err.message === 'Invalid login data.') return {
+         title: Lang.queryJS('login.error.invalidCredentials.title'),
+         desc: Lang.queryJS('login.error.invalidCredentials.desc'),
+      };
+   }
+
+   if (err.code != null) {
+      if (err.code === 'ENOENT') {
+         // No Internet.
+         return {
+            title: Lang.queryJS('login.error.noInternet.title'),
+            desc: Lang.queryJS('login.error.noInternet.desc'),
+         };
+      }
+
+      if (err.code === 'ENOTFOUND') {
+         // Could not reach server.
+         return {
+            title: Lang.queryJS('login.error.authDown.title'),
+            desc: Lang.queryJS('login.error.authDown.desc'),
+         };
+      }
+   }
+
+   if (err.code === 429) return {
+      title: Lang.queryJS('login.error.rateLimit.title'),
+      desc: Lang.queryJS('login.error.rateLimit.desc'),
+   };
+
+   return {
+      title: err.error,
+      desc: err.errorMessage,
+   };
 }
 
 let loginViewOnSuccess = VIEWS.landing;
@@ -261,37 +244,61 @@ loginButton.addEventListener('click', () => {
   loginLoading(true);
 
   AuthManager.addAccount(loginUsername.value, loginPassword.value).then((value) => {
-    updateSelectedAccount(value);
-    loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'));
-    $('.circle-loader').toggleClass('load-complete');
-    $('.checkmark').toggle();
-    setTimeout(() => {
-      switchView(VIEWS.login, loginViewOnSuccess, 500, 500, () => {
+     updateSelectedAccount(value);
+
+     loginButton.innerHTML = loginButton.innerHTML.replace(
+        Lang.queryJS('login.loggingIn'),
+        Lang.queryJS('login.success')
+     );
+
+     $('.circle-loader').toggleClass('load-complete');
+     $('.checkmark').toggle();
+
+     setTimeout(() => {
+        switchView(VIEWS.login, loginViewOnSuccess, 500, 500, () => {
         // Temporary workaround
         if (loginViewOnSuccess === VIEWS.settings) {
-          prepareSettings();
+           prepareSettings();
         }
-        loginViewOnSuccess = VIEWS.landing; // Reset this for good measure.
-        loginCancelEnabled(false); // Reset this for good measure.
-        loginViewCancelHandler = null; // Reset this for good measure.
+
+        // Reset this for good measure.
+        loginViewOnSuccess = VIEWS.landing;
+        loginCancelEnabled(false);
+        loginViewCancelHandler = null;
+
         loginUsername.value = '';
         loginPassword.value = '';
+
         $('.circle-loader').toggleClass('load-complete');
         $('.checkmark').toggle();
+
         loginLoading(false);
-        loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.success'), Lang.queryJS('login.login'));
+
+        loginButton.innerHTML = loginButton.innerHTML.replace(
+           Lang.queryJS('login.success'),
+           Lang.queryJS('login.login')
+        );
+
         formDisabled(false);
       });
     }, 1000);
+
   }).catch((err) => {
-    loginLoading(false);
-    const errF = resolveError(err);
-    setOverlayContent(errF.title, errF.desc, Lang.queryJS('login.tryAgain'));
-    setOverlayHandler(() => {
-      formDisabled(false);
-      toggleOverlay(false);
-    });
-    toggleOverlay(true);
-    loggerLogin.log('Error while logging in.', err);
+     loginLoading(false);
+     const errF = resolveError(err);
+
+     setOverlayContent(
+        errF.title,
+        errF.desc,
+        Lang.queryJS('login.tryAgain')
+     );
+
+     setOverlayHandler(() => {
+        formDisabled(false);
+        toggleOverlay(false);
+     });
+
+     toggleOverlay(true);
+     loggerLogin.log('Error while logging in.', err);
   });
 });

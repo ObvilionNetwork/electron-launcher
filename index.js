@@ -117,10 +117,6 @@ function createWindow() {
     slashes: true,
   }));
 
-  /* win.once('ready-to-show', () => {
-        win.show()
-    }) */
-
   win.removeMenu();
 
   win.resizable = true;

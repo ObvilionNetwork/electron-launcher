@@ -1,12 +1,13 @@
 {
     "env": {
         "browser": true,
-        "commonjs": true
+        "commonjs": true,
+        "node": true
     },
     "extends": ["airbnb-base"],
     "rules": {
         "linebreak-style": "off",
-        "indent": "off",
+        "indent": 4,
         "no-undef": "off"
     }
 }
