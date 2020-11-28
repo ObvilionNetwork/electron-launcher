@@ -382,7 +382,6 @@ body, button {
 
 /* Styles for dimmer login span. */
 .loginSpanDim {
-
     font-size: 12px;
     color: #848484;
     font-weight: bold;
@@ -581,7 +580,7 @@ body, button {
     text-align: center;
     box-sizing: border-box;
     padding: 7.5px;
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 1px;
 }
 .loginField:focus {
@@ -604,6 +603,10 @@ body, button {
 /* Add spacing between password field and options bar. */
 #labelPassword {
     margin-bottom: 13px;
+}
+
+#loginPassword {
+    letter-spacing: 2px;
 }
 
 /* Container which contains the forgot and remember options. */
@@ -652,7 +655,7 @@ body, button {
     -webkit-transform: translate3d(0, 0, 0);
     overflow: visible;
     transform: rotate(90deg);
-    margin-left: 20px;
+    margin-left: 15px;
     transition: 0.25s ease;
     width: 20px;
     height: 20px;
