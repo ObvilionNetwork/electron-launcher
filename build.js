@@ -43,7 +43,7 @@ builder.build({
     },
     mac: {
       target: 'dmg',
-      category: 'public.app-category.games',
+      category: 'public.src-category.games',
     },
     linux: {
       target: 'AppImage',
@@ -55,7 +55,7 @@ builder.build({
     },
     compression: 'maximum',
     files: [
-      '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json,build.js}',
+      '!{dist,.gitignore,.vscode,docs,dev-src-update.yml,.travis.yml,.nvmrc,.eslintrc.json,build.js}',
     ],
     extraResources: [
       'libraries',

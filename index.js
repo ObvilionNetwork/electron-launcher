@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const semver = require('semver');
 const url = require('url');
-const isDev = require('./app/assets/js/isdev');
+const isDev = require('./src/assets/js/isdev');
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
@@ -21,7 +21,7 @@ function initAutoUpdater(event, data) {
 
   if (isDev) {
     autoUpdater.autoInstallOnAppQuit = false;
-    autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml');
+    autoUpdater.updateConfigPath = path.join(__dirname, 'dev-src-update.yml');
   }
   if (process.platform === 'darwin') {
     autoUpdater.autoDownload = false;
@@ -112,7 +112,7 @@ function createWindow() {
   ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)));
 
   win.loadURL(url.format({
-    pathname: path.join(__dirname, 'app', 'app.ejs'),
+    pathname: path.join(__dirname, 'app', 'src.ejs'),
     protocol: 'file:',
     slashes: true,
   }));
@@ -218,7 +218,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
+  // On macOS it's common to re-create a window in the src when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
     createWindow();
