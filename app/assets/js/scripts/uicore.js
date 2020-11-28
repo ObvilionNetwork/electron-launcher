@@ -128,11 +128,6 @@ function showUpdateUI(info) {
   };
 }
 
-/* jQuery Example
-$(function(){
-    loggerUICore.log('UICore Initialized');
-}) */
-
 document.addEventListener('readystatechange', () => {
   if (document.readyState === 'interactive') {
     loggerUICore.log('UICore Initializing..');
@@ -198,12 +193,12 @@ $(document).on('click', 'a[href^="http"]', function (event) {
 });
 
 /**
- * Opens DevTools window if you hold (ctrl + shift + i).
+ * Opens DevTools window if you hold (Ctrl + F12).
  * This will crash the program if you are using multiple
  * DevTools, for example the chrome debugger in VS Code.
  */
 document.addEventListener('keydown', (e) => {
-  if ((e.key === 'I' || e.key === 'i') && e.ctrlKey && e.shiftKey) {
+  if (e.ctrlKey && e.code === 'F12') {
     const window = remote.getCurrentWindow();
     window.toggleDevTools();
   }

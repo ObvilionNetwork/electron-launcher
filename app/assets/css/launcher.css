@@ -8,6 +8,17 @@
  ******************************************************************************/
 
 @font-face {
+    font-family: 'CeraPro Medium';
+    src: url('../fonts/CeraPro-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'CeraPro Regular';
+    src: url('../fonts/CeraPro-Regular.ttf');
+}
+
+
+@font-face {
     font-family: 'Avenir Book';
     src: url('../fonts/Avenir-Book.ttf');
 }
@@ -42,7 +53,7 @@ p {
 
 /* Set default font and color. */
 body, button {
-    font-family: 'Avenir Book';
+    font-family: 'CeraPro Regular';
     color: white;
 }
 
@@ -110,8 +121,9 @@ body, button {
 }
 #frameTitleText {
     font-size: 14px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     letter-spacing: 0.5px;
+    margin-top: 2px;
 }
 
 /* Windows frame button dock. */
@@ -283,7 +295,7 @@ body, button {
 }
 
 #welcomeHeader {
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     text-align: center;
     color: white;
     margin-bottom: 25px;
@@ -370,6 +382,7 @@ body, button {
 
 /* Styles for dimmer login span. */
 .loginSpanDim {
+
     font-size: 12px;
     color: #848484;
     font-weight: bold;
@@ -486,7 +499,6 @@ body, button {
 /* Logo on login form. */
 #loginImageSeal {
     border-radius: 50%;
-    border: 2px solid #cad7e1;
     background: rgba(1, 2, 1, 0.5);
     height: 125px;
     width: 125px;
@@ -496,7 +508,7 @@ body, button {
 
 /* Header on login view. */
 #loginSubheader {
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     margin-bottom: 25px;
     font-size: 12px;
     letter-spacing: 1px;
@@ -521,7 +533,7 @@ body, button {
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-weight: bold;
     font-size: 8px;
     color: #ff1b0c;
@@ -557,7 +569,7 @@ body, button {
 
 /* Login text input styles. */
 .loginField {
-    font-family: 'Avenir Book';
+    font-family: 'CeraPro Regular';
     background: none;
     border-width: 1.5px 0px 0px 0px;
     border-style: solid;
@@ -822,6 +834,8 @@ body, button {
     border-radius: 1px;
     background: none;
     transition: 0.25s ease;
+    margin-top: 2px;
+    margin-left: -3px;
 }
 /* On hover and focus, add a grey border color. */
 #checkmarkContainer:hover input ~ *,
@@ -1052,7 +1066,7 @@ body, button {
 }
 .settingsTabHeaderText {
     font-size: 20px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
 }
 .settingsTabHeaderDesc {
     font-size: 12px;
@@ -1070,7 +1084,7 @@ body, button {
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     border: 1px solid rgba(126, 126, 126, 0.57);
-    font-family: 'Avenir Book';
+    font-family: 'CeraPro Regular';
     transition: 0.25s ease;
 }
 #settingsContainer input[type=number]:focus,
@@ -1099,7 +1113,7 @@ body, button {
 }
 .settingsFieldTitle {
     font-size: 14px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     color: rgba(255, 255, 255, 0.95);
 }
 .settingsFieldDesc {
@@ -1262,7 +1276,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 89%;
 }
 .settingsFileSelDesc strong {
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
 }
 
 /* * *
@@ -1350,7 +1364,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     color: grey;
     font-weight: bold;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
 }
 .settingsAuthAccountDetailValue {
     font-size: 14px;
@@ -1372,7 +1386,7 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     white-space: nowrap;
     background: none;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     outline: none;
     transition: 0.25s ease;
 }
@@ -1397,7 +1411,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     font-size: 12px;
     border-radius: 3px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -1481,7 +1495,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     font-size: 12px;
     border-radius: 3px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -2005,7 +2019,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Release type text. */
 #settingsAboutCurrentVersionTitle {
     font-size: 12px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     color: #23aa23;
     font-weight: bold;
 }
@@ -2094,7 +2108,7 @@ input:checked + .toggleSwitchSlider:before {
     background-color: rgba(255, 255, 255, 0.25);
     color: white;
     border-radius: 3px;
-    font-family: 'Avenir Book';
+    font-family: 'CeraPro Regular';
 }
 .settingsChangelogText li+li {
     margin-top: .25em;
@@ -2204,7 +2218,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Release type text. */
 #settingsUpdateVersionTitle {
     font-size: 12px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     color: #23aa23;
     font-weight: bold;
 }
@@ -2403,7 +2417,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleTitle {
     font-size: 18px;
     font-weight: bold;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
@@ -2720,7 +2734,7 @@ input:checked + .toggleSwitchSlider:before {
     z-index: 1;
     top: 115%;
     left: -17.5px;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
@@ -3052,7 +3066,7 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 4px;
     padding: 5px 10px;
     z-index: 1;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
     bottom: calc(100% + 15px);
@@ -3367,7 +3381,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Overlay title styles. */
 #overlayTitle {
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 1px;
@@ -3393,7 +3407,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
@@ -3445,7 +3459,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Server selection header. */
 #serverSelectHeader,
 #accountSelectHeader {
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-size: 20px;
     font-weight: bold;
     color: #fff;
@@ -3667,7 +3681,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Avenir Medium';
+    font-family: 'CeraPro Medium';
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
