@@ -139,8 +139,10 @@ exports.authenticate = function (username, password, clientToken) {
           logger.error('Error during authentication.', error);
           reject(error);
         } else if (response.statusCode === 200) {
+          body.code = response.statusCode;
           resolve(body);
         } else {
+          body.code = response.statusCode;
           reject(body || { code: 'ENOTFOUND' });
         }
       });
