@@ -1,15 +1,9 @@
 {
-  "name": "helioslauncher",
-  "version": "1.8.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "name": "launcher",
+  "version": "1.0.0",
+  "description": "Obvilion Network Launcher",
+  "author": "Obvilion Network",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
-  "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
-  },
-  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -20,9 +14,6 @@
     "dist:mac": "npm run dist -- MAC",
     "dist:linux": "npm run dist -- LINUX",
     "lint": "eslint --config .eslintrc.json ."
-  },
-  "engines": {
-    "node": "12.x.x"
   },
   "dependencies": {
     "adm-zip": "^0.4.16",
@@ -46,9 +37,5 @@
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
   }
 }
