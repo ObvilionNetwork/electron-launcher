@@ -2821,7 +2821,8 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     transition: 0.25s ease;
     font-weight: bold;
-    letter-spacing: 2px;
+    font-size: 10px;
+    letter-spacing: 0.9px;
     background-color: rgba(0, 0, 0, 0.35);
     -webkit-user-select: none;
     border: none;

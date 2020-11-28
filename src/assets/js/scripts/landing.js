@@ -123,15 +123,17 @@ document.getElementById('avatarOverlay').onclick = (e) => {
 
 // Bind selected account
 function updateSelectedAccount(authUser) {
-  let username = 'No Account Selected';
+  let username = 'Аккаунт не выбран';
+
   if (authUser != null) {
     if (authUser.displayName != null) {
       username = authUser.displayName;
     }
     if (authUser.uuid != null) {
-      document.getElementById('avatarContainer').style.backgroundImage = `url('https://crafatar.com/renders/body/${authUser.uuid}')`;
+      document.getElementById('avatarContainer').style.backgroundImage = `url('https://obvilionnetwork.ru/api/users/get/${authUser.displayName}/avatar')`;
     }
   }
+
   user_text.innerHTML = username;
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount());
