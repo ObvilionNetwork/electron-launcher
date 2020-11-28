@@ -100,7 +100,7 @@ function createWindow() {
     icon: getPlatformIcon('favicon'),
     frame: false,
     webPreferences: {
-      preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
+      preload: path.join(__dirname, 'src', 'assets', 'js', 'preloader.js'),
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
@@ -109,10 +109,10 @@ function createWindow() {
     backgroundColor: '#171614',
   });
 
-  ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)));
+  ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'src', 'assets', 'images', 'backgrounds')).length)));
 
   win.loadURL(url.format({
-    pathname: path.join(__dirname, 'app', 'src.ejs'),
+    pathname: path.join(__dirname, 'src', 'app.ejs'),
     protocol: 'file:',
     slashes: true,
   }));
@@ -203,7 +203,7 @@ function getPlatformIcon(filename) {
       break;
   }
 
-  return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`);
+  return path.join(__dirname, 'src', 'assets', 'images', `${filename}.${ext}`);
 }
 
 app.on('ready', createWindow);
