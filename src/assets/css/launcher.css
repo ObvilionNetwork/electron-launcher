@@ -532,10 +532,10 @@ body, button {
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
-    font-family: 'CeraPro Medium';
-    font-weight: bold;
-    font-size: 8px;
-    color: #ff1b0c;
+    font-family: 'CeraPro Regular';
+    font-weight: normal;
+    font-size: 9px;
+    color: #fa3b2e;
     width: 100%;
     text-align: right;
     position: absolute;
