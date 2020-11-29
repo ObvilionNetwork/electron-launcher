@@ -7,7 +7,6 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 // Internal Requirements
-const DiscordWrapper = require('./assets/js/discordwrapper');
 const Mojang = require('./assets/js/mojang');
 const ProcessBuilder = require('./assets/js/processbuilder');
 const ServerStatus = require('./assets/js/serverstatus');
@@ -693,7 +692,7 @@ function dlAsync(login = true) {
           // Init Discord Hook
           const distro = DistroManager.getDistribution();
           if (distro.discord != null && serv.discord != null) {
-            DiscordWrapper.initRPC(distro.discord, serv.discord);
+            DiscordWrapper.initServer(distro.discord, serv.discord);
             hasRPC = true;
             proc.on('close', (code, signal) => {
               loggerLaunchSuite.log('Shutting down Discord Rich Presence..');
