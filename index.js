@@ -2,6 +2,7 @@
 const {
   app, BrowserWindow, ipcMain, Menu,
 } = require('electron');
+
 const { autoUpdater } = require('electron-updater');
 const ejse = require('ejs-electron');
 const fs = require('fs');
@@ -9,6 +10,7 @@ const path = require('path');
 const semver = require('semver');
 const url = require('url');
 const isDev = require('./src/assets/js/isdev');
+
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {

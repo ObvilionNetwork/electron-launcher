@@ -1,11 +1,6 @@
 const request = require('request');
 const logger = require('./loggerutil')('%c[Mojang]', 'color: #a02d2a; font-weight: bold');
 
-const minecraftAgent = {
-  name: 'Minecraft',
-  version: 1,
-};
-
 const authpath = 'https://obvilionnetwork.ru/api/auth';
 const statuses = [
   {

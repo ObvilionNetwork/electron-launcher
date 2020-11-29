@@ -9,6 +9,7 @@ const AuthManager = require('./assets/js/authmanager');
 const ConfigManager = require('./assets/js/configmanager');
 const DistroManager = require('./assets/js/distromanager');
 const Lang = require('./assets/js/langloader');
+const DiscordWrapper = require('./assets/js/discordWrapper');
 
 let rscShouldLoad = false;
 let fatalStartupError = false;
@@ -37,6 +38,31 @@ let currentView;
  * fades in.
  */
 function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, onCurrentFade = () => {}, onNextFade = () => {}) {
+  const activity = DiscordWrapper.getActivity();
+
+  console.log(next)
+
+  if (next === '#loginContainer') {
+    const newActivity = {
+      details: 'В меню авторизации',
+      startTimestamp: activity.startTimestamp,
+      largeImageKey: `logo`,
+    };
+
+    DiscordWrapper.setActivity(newActivity);
+  } else if (next === '#landingContainer') {
+    const newActivity = {
+      details: 'Выбирает сервер',
+      state: 'Игрок: ' + ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName,
+      startTimestamp: activity.startTimestamp,
+      largeImageKey: `logo`,
+    };
+
+    DiscordWrapper.setActivity(newActivity);
+  }
+
+  DiscordWrapper.render();
+
   currentView = next;
   $(`${current}`).fadeOut(currentFadeTime, () => {
     onCurrentFade();
@@ -61,6 +87,8 @@ function showMainUI(data) {
     ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease());
   }
 
+  DiscordWrapper.init();
+
   prepareSettings(true);
   updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()));
   refreshServerStatus();
@@ -81,6 +109,18 @@ function showMainUI(data) {
       currentView = VIEWS.welcome;
       $(VIEWS.welcome).fadeIn(1000);
     } else if (isLoggedIn) {
+      // Discord RP
+      const activity = DiscordWrapper.getActivity();
+      const newActivity = {
+        details: 'Выбирает сервер',
+        state: 'Игрок: ' + ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName,
+        startTimestamp: activity.startTimestamp,
+        largeImageKey: `logo`,
+      };
+
+      DiscordWrapper.setActivity(newActivity);
+      DiscordWrapper.render();
+
       currentView = VIEWS.landing;
       $(VIEWS.landing).fadeIn(1000);
     } else {
