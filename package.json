@@ -19,7 +19,6 @@
   "dependencies": {
     "adm-zip": "^0.4.16",
     "async": "^3.2.0",
-    "discord-rich-presence": "0.0.8",
     "discord-rpc": "^3.1.4",
     "ejs": "^3.1.5",
     "ejs-electron": "^2.1.1",
