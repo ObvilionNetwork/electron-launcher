@@ -163,20 +163,26 @@ function formDisabled(v) {
  */
 function resolveError(err) {
    if (err.message) {
-      if (err.message === 'User not found.') return {
+      if (err.message === 'User not found.') {
+ return {
          title: Lang.queryJS('login.error.userMigrated.title'),
          desc: Lang.queryJS('login.error.userMigrated.desc'),
       };
+}
 
-      if (err.message === 'Invalid login data.') return {
+      if (err.message === 'Invalid login data.') {
+ return {
          title: Lang.queryJS('login.error.invalidCredentials.title'),
          desc: Lang.queryJS('login.error.invalidCredentials.desc'),
       };
+}
 
-      if (err.message === 'Invalid login data.') return {
+      if (err.message === 'Invalid login data.') {
+ return {
          title: Lang.queryJS('login.error.invalidCredentials.title'),
          desc: Lang.queryJS('login.error.invalidCredentials.desc'),
       };
+}
    }
 
    if (err.code != null) {
@@ -197,10 +203,12 @@ function resolveError(err) {
       }
    }
 
-   if (err.code === 429) return {
+   if (err.code === 429) {
+ return {
       title: Lang.queryJS('login.error.rateLimit.title'),
       desc: Lang.queryJS('login.error.rateLimit.desc'),
    };
+}
 
    return {
       title: err.error,
@@ -248,7 +256,7 @@ loginButton.addEventListener('click', () => {
 
      loginButton.innerHTML = loginButton.innerHTML.replace(
         Lang.queryJS('login.loggingIn'),
-        Lang.queryJS('login.success')
+        Lang.queryJS('login.success'),
      );
 
      $('.circle-loader').toggleClass('load-complete');
@@ -276,13 +284,12 @@ loginButton.addEventListener('click', () => {
 
         loginButton.innerHTML = loginButton.innerHTML.replace(
            Lang.queryJS('login.success'),
-           Lang.queryJS('login.login')
+           Lang.queryJS('login.login'),
         );
 
         formDisabled(false);
       });
     }, 1000);
-
   }).catch((err) => {
      loginLoading(false);
      const errF = resolveError(err);
@@ -290,7 +297,7 @@ loginButton.addEventListener('click', () => {
      setOverlayContent(
         errF.title,
         errF.desc,
-        Lang.queryJS('login.tryAgain')
+        Lang.queryJS('login.tryAgain'),
      );
 
      setOverlayHandler(() => {

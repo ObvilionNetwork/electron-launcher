@@ -1,5 +1,9 @@
+/* eslint-disable no-console */
+
 const builder = require('electron-builder');
-const { name, productName, description, author } = require('./package.json');
+const {
+  name, productName, description, author,
+} = require('./package.json');
 
 const { Platform } = builder;
 
@@ -18,10 +22,13 @@ function getCurrentPlatform() {
 }
 
 builder.build({
-  targets: (process.argv[2] != null && Platform[process.argv[2]] != null ? Platform[process.argv[2]] : getCurrentPlatform()).createTarget(),
+  targets: (process.argv[2] != null && Platform[process.argv[2]] != null
+      ? Platform[process.argv[2]]
+      : getCurrentPlatform()).createTarget(),
   config: {
     appId: name,
-    productName: productName,
+    productName,
+    // eslint-disable-next-line no-template-curly-in-string
     artifactName: '${productName}-setup-${version}.${ext}',
     copyright: 'Copyright © 2020 Obvilionnetwork.ru',
     directories: {
@@ -51,7 +58,7 @@ builder.build({
       maintainer: author,
       vendor: author,
       synopsis: description,
-      description: description,
+      description,
       category: 'Game',
     },
     compression: 'maximum',

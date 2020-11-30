@@ -16,7 +16,7 @@ exports.addAccount = async function (username, password) {
   try {
     const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken());
     if (session.token) {
-      //TODO: add displayUsername
+      // TODO: add displayUsername
       const ret = ConfigManager.addAuthAccount(session.uuid, session.token, username, username);
 
       if (ConfigManager.getClientToken() == null) {
