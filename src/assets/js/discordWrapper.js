@@ -1,5 +1,5 @@
+const { Client } = require('discord-rpc');
 const logger = require('./loggerutil')('%c[DiscordWrapper]', 'color: #7289da; font-weight: bold');
-const { Client } = require("discord-rpc");
 
 const rpc = new Client({
    transport: 'ipc',
@@ -23,7 +23,7 @@ function init() {
    rpc.on('ready', () => {
       rpc.setActivity(activity);
 
-      logger.log(`Rich Prescence is on: ${rpc.user.username}`);
+      logger.log(`Rich Presence is on: ${rpc.user.username}`);
    });
 
    rpc.login({
