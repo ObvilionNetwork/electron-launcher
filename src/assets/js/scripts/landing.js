@@ -7,8 +7,6 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 // Internal Requirements
-const Mojang = require('./assets/js/mojang');
-const ProcessBuilder = require('./assets/js/processbuilder');
 const ServerStatus = require('./assets/js/serverstatus');
 
 // Launch Elements
@@ -85,8 +83,10 @@ function setLaunchEnabled(val) {
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', (e) => {
   loggerLanding.log('Launching game..');
+
   const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion();
   const jExe = ConfigManager.getJavaExecutable();
+
   if (jExe == null) {
     asyncSystemScan(mcVersion);
   } else {
@@ -158,7 +158,7 @@ server_selection_button.onclick = (e) => {
   toggleServerSelection(true);
 };
 
-// OK
+// TODO
 const refreshServerStatus = async (fade = false) => {
   loggerLanding.log('Refreshing Server Status');
   const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
@@ -991,7 +991,7 @@ function loadNews() {
   return new Promise((resolve, reject) => {
     const distroData = DistroManager.getDistribution();
     const newsFeed = distroData.getRSS();
-    const newsHost = `${new URL(newsFeed).origin}/`;
+    const newsHost = `${new URL('https://obvilionnetwork.ru/api/news').origin}/`;
     $.ajax({
       url: newsFeed,
       success: (data) => {

@@ -2,9 +2,6 @@
 const os = require('os');
 const semver = require('semver');
 
-const { JavaGuard } = require('./assets/js/assetguard');
-const DropinModUtil = require('./assets/js/dropinmodutil');
-
 const settingsState = {
   invalid: new Set(),
 };

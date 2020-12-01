@@ -7,7 +7,6 @@ const path = require('path');
 
 const AuthManager = require('./assets/js/authmanager');
 const ConfigManager = require('./assets/js/configmanager');
-const DistroManager = require('./assets/js/distromanager');
 const Lang = require('./assets/js/langloader');
 const DiscordWrapper = require('./assets/js/discordWrapper');
 
