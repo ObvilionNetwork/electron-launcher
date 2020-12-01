@@ -9,6 +9,7 @@ const AuthManager = require('./assets/js/authmanager');
 const ConfigManager = require('./assets/js/configmanager');
 const Lang = require('./assets/js/langloader');
 const DiscordWrapper = require('./assets/js/discordWrapper');
+const ClientManager = require('./assets/js/client/clientManager');
 
 let rscShouldLoad = false;
 let fatalStartupError = false;
@@ -408,7 +409,7 @@ document.addEventListener('readystatechange', () => {
     if (rscShouldLoad) {
       rscShouldLoad = false;
       if (!fatalStartupError) {
-        const data = DistroManager.getDistribution();
+        const data = ClientManager.getDistribution();
         showMainUI(data);
       } else {
         showFatalStartupError();
@@ -420,8 +421,8 @@ document.addEventListener('readystatechange', () => {
 // Actions that must be performed after the distribution index is downloaded.
 ipcRenderer.on('distributionIndexDone', (event, res) => {
   if (res) {
-    const data = DistroManager.getDistribution();
-    syncModConfigurations(data);
+    const data = ClientManager.getDistribution();
+    //syncModConfigurations(data); TODO
     if (document.readyState === 'interactive' || document.readyState === 'complete') {
       showMainUI(data);
     } else {
