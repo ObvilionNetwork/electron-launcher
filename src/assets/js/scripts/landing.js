@@ -135,6 +135,7 @@ function updateSelectedAccount(authUser) {
 
   user_text.innerHTML = username;
 }
+
 updateSelectedAccount(ConfigManager.getSelectedAccount());
 
 // Bind selected server
@@ -157,86 +158,26 @@ server_selection_button.onclick = (e) => {
   toggleServerSelection(true);
 };
 
-// Update Mojang Status Color
-const refreshMojangStatuses = async function () {
-  loggerLanding.log('Refreshing Mojang Statuses..');
-
-  let status = 'grey';
-  let tooltipEssentialHTML = '';
-  let tooltipNonEssentialHTML = '';
-
-  try {
-    const statuses = await Mojang.status();
-    greenCount = 0;
-    greyCount = 0;
-
-    for (let i = 0; i < statuses.length; i++) {
-      const service = statuses[i];
-
-      // Mojang API is broken for these two. https://bugs.mojang.com/browse/WEB-2303
-      if (service.service === 'sessionserver.mojang.com' || service.service === 'minecraft.net') {
-        service.status = 'green';
-      }
-
-      if (service.essential) {
-        tooltipEssentialHTML += `<div class="mojangStatusContainer">
-                    <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
-                    <span class="mojangStatusName">${service.name}</span>
-                </div>`;
-      } else {
-        tooltipNonEssentialHTML += `<div class="mojangStatusContainer">
-                    <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
-                    <span class="mojangStatusName">${service.name}</span>
-                </div>`;
-      }
-
-      if (service.status === 'yellow' && status !== 'red') {
-        status = 'yellow';
-      } else if (service.status === 'red') {
-        status = 'red';
-      } else {
-        if (service.status === 'grey') {
-          ++greyCount;
-        }
-        ++greenCount;
-      }
-    }
-
-    if (greenCount === statuses.length) {
-      if (greyCount === statuses.length) {
-        status = 'grey';
-      } else {
-        status = 'green';
-      }
-    }
-  } catch (err) {
-    loggerLanding.warn('Unable to refresh Mojang service status.');
-    loggerLanding.debug(err);
-  }
-
-  document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML;
-  document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML;
-  document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status);
-};
-
-const refreshServerStatus = async function (fade = false) {
+// OK
+const refreshServerStatus = async (fade = false) => {
   loggerLanding.log('Refreshing Server Status');
   const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
 
-  let pLabel = 'SERVER';
-  let pVal = 'OFFLINE';
+  let pLabel = 'СЕРВЕР';
+  let pVal = 'ОФФЛАЙН';
 
   try {
     const serverURL = new URL(`my://${serv.getAddress()}`);
     const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port);
     if (servStat.online) {
-      pLabel = 'PLAYERS';
+      pLabel = 'ИГРОКОВ';
       pVal = `${servStat.onlinePlayers}/${servStat.maxPlayers}`;
     }
   } catch (err) {
     loggerLanding.warn('Unable to refresh server status, assuming offline.');
     loggerLanding.debug(err);
   }
+
   if (fade) {
     $('#server_status_wrapper').fadeOut(250, () => {
       document.getElementById('landingPlayerLabel').innerHTML = pLabel;
@@ -247,13 +188,8 @@ const refreshServerStatus = async function (fade = false) {
     document.getElementById('landingPlayerLabel').innerHTML = pLabel;
     document.getElementById('player_count').innerHTML = pVal;
   }
-};
+}
 
-refreshMojangStatuses();
-// Server Status is refreshed in uibinder.js on distributionIndexDone.
-
-// Set refresh rate to once every 5 minutes.
-const mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000);
 const serverStatusListener = setInterval(() => refreshServerStatus(true), 300000);
 
 /**

@@ -357,13 +357,6 @@ class Server {
   }
 
   /**
-     * @returns {string} The version of the server configuration.
-     */
-  getVersion() {
-    return this.version;
-  }
-
-  /**
      * @returns {string} The IP address of the server.
      */
   getAddress() {
@@ -375,15 +368,6 @@ class Server {
      */
   getMinecraftVersion() {
     return this.minecraftVersion;
-  }
-
-  /**
-     * @returns {boolean} Whether or not this server is the main
-     * server. The main server is selected by the launcher when
-     * no valid server is selected.
-     */
-  isMainServer() {
-    return this.mainServer;
   }
 
   /**
@@ -521,11 +505,12 @@ exports.pullRemote = function () {
   }
   return new Promise((resolve, reject) => {
     const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json';
-    // const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'
+
     const opts = {
       url: distroURL,
       timeout: 2500,
     };
+
     const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'distribution.json');
     request(opts, (error, resp, body) => {
       if (!error) {
@@ -543,6 +528,7 @@ exports.pullRemote = function () {
             reject(err);
           }
         });
+
       } else {
         reject(error);
       }

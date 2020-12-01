@@ -97,6 +97,7 @@ exports.status = function () {
               }
             }
           }
+          logger.log(statuses)
           resolve(statuses);
         }
       });
