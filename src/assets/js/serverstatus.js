@@ -8,12 +8,9 @@ const net = require('net');
  * @returns {Promise.<Object>} A promise which resolves to an object containing
  * status information.
  */
-function getStatus(address, port = 25565) {
-  if (port == null || port == '') {
-    port = 25565;
-  }
+exports.getStatus = (address, port = 25565) => {
   if (typeof port === 'string') {
-    port = parseInt(port);
+    port = parseInt(port, 10);
   }
 
   return new Promise((resolve, reject) => {
@@ -24,6 +21,7 @@ function getStatus(address, port = 25565) {
 
     socket.setTimeout(2500, () => {
       socket.end();
+      // eslint-disable-next-line prefer-promise-reject-errors
       reject({
         code: 'ETIMEDOUT',
         errno: 'ETIMEDOUT',
@@ -33,16 +31,16 @@ function getStatus(address, port = 25565) {
     });
 
     socket.on('data', (data) => {
-      if (data != null && data != '') {
-        const server_info = data.toString().split('\x00\x00\x00');
+      if (!data) {
+        const serverInfo = data.toString().split('\x00\x00\x00');
         const NUM_FIELDS = 6;
-        if (server_info != null && server_info.length >= NUM_FIELDS) {
+        if (serverInfo != null && serverInfo.length >= NUM_FIELDS) {
           resolve({
             online: true,
-            version: server_info[2].replace(/\u0000/g, ''),
-            motd: server_info[3].replace(/\u0000/g, ''),
-            onlinePlayers: server_info[4].replace(/\u0000/g, ''),
-            maxPlayers: server_info[5].replace(/\u0000/g, ''),
+            version: serverInfo[2].replace(/\u0000/g, ''),
+            motd: serverInfo[3].replace(/\u0000/g, ''),
+            onlinePlayers: serverInfo[4].replace(/\u0000/g, ''),
+            maxPlayers: serverInfo[5].replace(/\u0000/g, ''),
           });
         } else {
           resolve({

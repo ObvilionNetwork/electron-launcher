@@ -4,10 +4,11 @@ const { Client } = require("discord-rpc");
 const rpc = new Client({
    transport: 'ipc',
 });
+
 let activity = {
    details: 'Ожидает загрузки лаунчера',
    startTimestamp: new Date(),
-   largeImageKey: `logo`,
+   largeImageKey: 'logo',
 };
 
 function setActivity(newActivity) {
@@ -19,22 +20,21 @@ function getActivity() {
 }
 
 function init() {
-   rpc.on("ready", () => {
+   rpc.on('ready', () => {
       rpc.setActivity(activity);
 
-      logger.log("Rich Presence is on: " + rpc.user.username);
+      logger.log(`Rich Prescence is on: ${rpc.user.username}`);
    });
 
    rpc.login({
-      clientId: `657878741703327754`,
+      clientId: '657878741703327754',
    });
 }
 
 function render() {
-   console.log(activity)
    rpc.setActivity(activity);
 }
 
 module.exports = {
-   render, init, setActivity, getActivity
-}
+   render, init, setActivity, getActivity,
+};

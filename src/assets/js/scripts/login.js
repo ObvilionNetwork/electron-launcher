@@ -248,7 +248,7 @@ loginButton.addEventListener('click', () => {
 
      loginButton.innerHTML = loginButton.innerHTML.replace(
         Lang.queryJS('login.loggingIn'),
-        Lang.queryJS('login.success')
+        Lang.queryJS('login.success'),
      );
 
      $('.circle-loader').toggleClass('load-complete');
@@ -276,7 +276,7 @@ loginButton.addEventListener('click', () => {
 
         loginButton.innerHTML = loginButton.innerHTML.replace(
            Lang.queryJS('login.success'),
-           Lang.queryJS('login.login')
+           Lang.queryJS('login.login'),
         );
 
         formDisabled(false);
@@ -290,7 +290,7 @@ loginButton.addEventListener('click', () => {
      setOverlayContent(
         errF.title,
         errF.desc,
-        Lang.queryJS('login.tryAgain')
+        Lang.queryJS('login.tryAgain'),
      );
 
      setOverlayHandler(() => {

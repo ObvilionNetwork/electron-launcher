@@ -1,10 +1,12 @@
+/* eslint-disable no-console */
+
 // Requirements
 const {
   app, BrowserWindow, ipcMain, Menu,
 } = require('electron');
 
 const { autoUpdater } = require('electron-updater');
-const ejse = require('ejs-electron');
+const ejs = require('ejs-electron');
 const fs = require('fs');
 const path = require('path');
 const semver = require('semver');
@@ -43,6 +45,22 @@ function initAutoUpdater(event, data) {
   autoUpdater.on('error', (err) => {
     event.sender.send('autoUpdateNotification', 'realerror', err);
   });
+}
+
+function getPlatformIcon(filename) {
+  let ext;
+  switch (process.platform) {
+    case 'win32':
+      ext = 'ico';
+      break;
+    case 'darwin':
+    case 'linux':
+    default:
+      ext = 'png';
+      break;
+  }
+
+  return path.join(__dirname, 'src', 'assets', 'images', `${filename}.${ext}`);
 }
 
 // Open channel to listen for update actions.
@@ -111,7 +129,7 @@ function createWindow() {
     backgroundColor: '#171614',
   });
 
-  ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'src', 'assets', 'images', 'backgrounds')).length)));
+  ejs.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'src', 'assets', 'images', 'backgrounds')).length)));
 
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'src', 'app.ejs'),
@@ -188,24 +206,8 @@ function createMenu() {
   }
 }
 
-function getPlatformIcon(filename) {
-  let ext;
-  switch (process.platform) {
-    case 'win32':
-      ext = 'ico';
-      break;
-    case 'darwin':
-    case 'linux':
-    default:
-      ext = 'png';
-      break;
-  }
-
-  return path.join(__dirname, 'src', 'assets', 'images', `${filename}.${ext}`);
-}
-
-app.on('ready', createWindow);
-app.on('ready', createMenu);
+app.whenReady().then(createWindow);
+app.whenReady().then(createMenu);
 
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar

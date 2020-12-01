@@ -39,23 +39,22 @@ let currentView;
  */
 function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, onCurrentFade = () => {}, onNextFade = () => {}) {
   const activity = DiscordWrapper.getActivity();
-
-  console.log(next)
+  console.log(next);
 
   if (next === '#loginContainer') {
     const newActivity = {
       details: 'В меню авторизации',
       startTimestamp: activity.startTimestamp,
-      largeImageKey: `logo`,
+      largeImageKey: 'logo',
     };
 
     DiscordWrapper.setActivity(newActivity);
   } else if (next === '#landingContainer') {
     const newActivity = {
       details: 'Выбирает сервер',
-      state: 'Игрок: ' + ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName,
+      state: `Игрок: ${ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName}`,
       startTimestamp: activity.startTimestamp,
-      largeImageKey: `logo`,
+      largeImageKey: 'logo',
     };
 
     DiscordWrapper.setActivity(newActivity);
@@ -113,9 +112,9 @@ function showMainUI(data) {
       const activity = DiscordWrapper.getActivity();
       const newActivity = {
         details: 'Выбирает сервер',
-        state: 'Игрок: ' + ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName,
+        state: `Игрок: ${ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName}`,
         startTimestamp: activity.startTimestamp,
-        largeImageKey: `logo`,
+        largeImageKey: 'logo',
       };
 
       DiscordWrapper.setActivity(newActivity);
