@@ -13,7 +13,6 @@ const semver = require('semver');
 const url = require('url');
 const isDev = require('./src/assets/js/isdev');
 
-
 // Setup auto updater.
 function initAutoUpdater(event, data) {
   if (data) {
