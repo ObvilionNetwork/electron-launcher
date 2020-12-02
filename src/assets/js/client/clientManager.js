@@ -3,7 +3,6 @@ const path = require('path');
 const request = require('request');
 
 const ConfigManager = require('../configmanager');
-const Client = require('./client');
 const logger = require('../loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold');
 
 let config = null;
@@ -23,8 +22,19 @@ function init() {
          servers: [
             {
                name: 'HiTech',
-               id: 'hitech'
-            }
+               id: 'hitech',
+               description: 'test',
+               version: '1.7.10',
+               icon: 'https://cdn.discordapp.com/icons/652249606599737391/588419cb59d8ece0062a3f1dc6b88751.png?size=512',
+               address: 'obvilionnetwork.ru:25565',
+            },
+            {
+               name: 'Test',
+               id: 'test',
+               description: 'test',
+               version: '1.7.10',
+               icon: 'https://im0-tub-by.yandex.net/i?id=de283b281aa17181aab5115b594978cc&n=13&exp=1',
+            },
          ]
       }
 
@@ -46,15 +56,61 @@ function init() {
    });
 }
 
+class Client {
+   static fromJSON(json) {
+      return Object.assign(new Client(), json);
+   }
+
+   getID() {
+      return this.id;
+   }
+
+   getName() {
+      return this.name;
+   }
+
+   getDescription() {
+      return this.description;
+   }
+
+   getVersion() {
+      return this.version;
+   }
+
+   getIcon() {
+      return this.icon;
+   }
+
+   getCore() {
+      return this.core;
+   }
+
+   getLibraries() {
+      return this.libraries;
+   }
+
+   getNatives() {
+      return this.natives;
+   }
+
+   getMods() {
+      return this.mods;
+   }
+
+   getServerIP() {
+      return this.address;
+   }
+}
+
 class Distribution {
    static fromJSON(json) {
       return Object.assign(new Distribution(), json);
    }
 
-   getServer(name) {
+   getServer(id) {
       let server = null;
       this.servers.forEach(value => {
-         if (value.name === name) {
+         if (value.id === id) {
             server = Client.fromJSON(value);
          }
       });

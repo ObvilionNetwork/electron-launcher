@@ -161,13 +161,13 @@ server_selection_button.onclick = (e) => {
 // TODO
 const refreshServerStatus = async (fade = false) => {
   loggerLanding.log('Refreshing Server Status');
-  const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
+  const serv = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer());
 
   let pLabel = 'СЕРВЕР';
   let pVal = 'ОФФЛАЙН';
 
   try {
-    const serverURL = new URL(`my://${serv.getAddress()}`);
+    const serverURL = new URL(`my://${serv.getServerIP()}`);
     const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port);
     if (servStat.online) {
       pLabel = 'ИГРОКОВ';
@@ -989,62 +989,62 @@ function displayArticle(articleObject, index) {
  */
 function loadNews() {
   return new Promise((resolve, reject) => {
-    const distroData = DistroManager.getDistribution();
-    const newsFeed = distroData.getRSS();
-    const newsHost = `${new URL('https://obvilionnetwork.ru/api/news').origin}/`;
-    $.ajax({
-      url: newsFeed,
-      success: (data) => {
-        const items = $(data).find('item');
-        const articles = [];
-
-        for (let i = 0; i < items.length; i++) {
-          // JQuery Element
-          const el = $(items[i]);
-
-          // Resolve date.
-          const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
-          });
-
-          // Resolve comments.
-          let comments = el.find('slash\\:comments').text() || '0';
-          comments = `${comments} Comment${comments === '1' ? '' : 's'}`;
-
-          // Fix relative links in content.
-          let content = el.find('content\\:encoded').text();
-          const regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g;
-          let matches;
-          while ((matches = regex.exec(content))) {
-            content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`);
-          }
-
-          const link = el.find('link').text();
-          const title = el.find('title').text();
-          const author = el.find('dc\\:creator').text();
-
-          // Generate article.
-          articles.push(
-            {
-              link,
-              title,
-              date,
-              author,
-              content,
-              comments,
-              commentsLink: `${link}#comments`,
-            },
-          );
-        }
-        resolve({
-          articles,
-        });
-      },
-      timeout: 2500,
-    }).catch((err) => {
-      resolve({
-        articles: null,
-      });
-    });
+    // const distroData = ClientManager.getDistribution();
+    // const newsFeed = distroData.getRSS();
+    // const newsHost = `${new URL('https://obvilionnetwork.ru/api/news').origin}/`;
+    // $.ajax({
+    //   url: newsFeed,
+    //   success: (data) => {
+    //     const items = $(data).find('item');
+    //     const articles = [];
+    //
+    //     for (let i = 0; i < items.length; i++) {
+    //       // JQuery Element
+    //       const el = $(items[i]);
+    //
+    //       // Resolve date.
+    //       const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {
+    //         month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
+    //       });
+    //
+    //       // Resolve comments.
+    //       let comments = el.find('slash\\:comments').text() || '0';
+    //       comments = `${comments} Comment${comments === '1' ? '' : 's'}`;
+    //
+    //       // Fix relative links in content.
+    //       let content = el.find('content\\:encoded').text();
+    //       const regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g;
+    //       let matches;
+    //       while ((matches = regex.exec(content))) {
+    //         content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`);
+    //       }
+    //
+    //       const link = el.find('link').text();
+    //       const title = el.find('title').text();
+    //       const author = el.find('dc\\:creator').text();
+    //
+    //       // Generate article.
+    //       articles.push(
+    //         {
+    //           link,
+    //           title,
+    //           date,
+    //           author,
+    //           content,
+    //           comments,
+    //           commentsLink: `${link}#comments`,
+    //         },
+    //       );
+    //     }
+    //     resolve({
+    //       articles,
+    //     });
+    //   },
+    //   timeout: 2500,
+    // }).catch((err) => {
+    //   resolve({
+    //     articles: null,
+    //   });
+    // });
   });
 }
