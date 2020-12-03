@@ -881,7 +881,7 @@ settingsMinRAMRange.onchange = (e) => {
   // Change range bar color based on the selected value.
   if (sMinV >= max / 2) {
     bar.style.background = '#e86060';
-  } else if (sMinV >= max / 4) {
+  } else if (sMinV >= max / 2.4) {
     bar.style.background = '#e8e18b';
   } else {
     bar.style.background = null;
@@ -913,7 +913,7 @@ settingsMaxRAMRange.onchange = (e) => {
   // Change range bar color based on the selected value.
   if (sMaxV >= max / 2) {
     bar.style.background = '#e86060';
-  } else if (sMaxV >= max / 4) {
+  } else if (sMaxV >= max / 2.4) {
     bar.style.background = '#e8e18b';
   } else {
     bar.style.background = null;
