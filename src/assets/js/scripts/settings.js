@@ -862,13 +862,10 @@ const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM();
-const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM();
 
 // Set the max and min values for the ranged sliders.
 settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY);
-settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY);
 settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY);
-settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY);
 
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
