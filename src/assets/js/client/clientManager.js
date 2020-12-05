@@ -3,6 +3,8 @@ const path = require('path');
 const http = require('https');
 const request = require('request');
 
+const { exec } = require('child_process');
+
 const ConfigManager = require('../configmanager');
 const logger = require('../loggerutil')('%c[ClientManager]', 'color: #a02d2a; font-weight: bold');
 
@@ -196,6 +198,62 @@ class ClientDownloader {
       this.onComplete.forEach(c => {
          c();
       });
+
+      exec(this.getCMD(), (err, stdout, stderr) => {
+
+         // the *entire* stdout and stderr (buffered)
+         console.log(`stdout: ${stdout}`);
+         console.log(`stderr: ${stderr}`);
+      })
+   }
+
+   getCMD() {
+      let cmd = `"${ConfigManager.getJavaExecutable()}" `;
+      cmd += `-Xms${ConfigManager.getMinRAM()} `;
+      cmd += `-Xmx${ConfigManager.getMaxRAM()} `;
+      cmd += `-Djava.library.path=${path.join(this.clientDir, 'natives')} `;
+      cmd += `-cp ${this.getClasspath()}`;
+      cmd += `-Duser.language=en `;
+
+      cmd += `net.minecraft.launchwrapper.Launch `;
+
+      cmd += `--username ${ConfigManager.getSelectedAccount().username} `;
+      cmd += `--version ${this.client.getCore().type} ${this.client.getVersion()} `;
+      cmd += `--gameDir ${this.clientDir} `;
+      //cmd += "--assetsDir  ";
+      cmd += `--assetIndex ${this.client.getVersion()} `;
+      cmd += `--uuid ${ConfigManager.getSelectedAccount().uuid} `;
+      cmd += `--accessToken ${ConfigManager.getSelectedAccount().accessToken} `;
+      cmd += "--userProperties [] ";
+      cmd += "--userType legacy ";
+      cmd += "--tweakClass cpw.mods.fml.common.launcher.FMLTweaker ";
+
+      return cmd;
+   }
+
+   getClasspath() {
+      const libFiles = path.join(this.clientDir, 'libraries');
+      const libs = fs.readdirSync(libFiles);
+
+      let cp = '';
+
+      for (const lib of libs) {
+         const stats = fs.statSync(path.join(libFiles, lib));
+         if (stats.isFile()) {
+            cp += path.join(libFiles, lib) + ';'
+         } else {
+            const libs2 = fs.readdirSync(path.join(libFiles, lib));
+            for (const lib2 of libs2) {
+               const stats2 = fs.statSync(path.join(libFiles, lib, lib2));
+               cp += path.join(libFiles, lib, lib2) + ';'
+            }
+         }
+      }
+
+      cp += path.join(this.clientDir, 'forge.jar') + ';';
+      cp += path.join(this.clientDir, 'minecraft.jar') + ';';
+
+      return cp;
    }
 
    async downloadAll(modules) {
