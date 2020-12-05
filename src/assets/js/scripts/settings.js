@@ -301,19 +301,6 @@ settingsNavDone.onclick = () => {
 };
 
 /**
- * Account Management Tab
- */
-
-// Bind the add account button.
-document.getElementById('settingsAddAccount').onclick = (e) => {
-  switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-    loginViewOnCancel = VIEWS.settings;
-    loginViewOnSuccess = VIEWS.settings;
-    loginCancelEnabled(true);
-  });
-};
-
-/**
  * Bind functionality for the account selection buttons. If another account
  * is selected, the UI of the previously selected account will be updated.
  */
@@ -349,10 +336,10 @@ function bindAuthAccountLogOut() {
       if (Object.keys(ConfigManager.getAuthAccounts()).length === 1) {
         isLastAccount = true;
         setOverlayContent(
-          'Warning<br>This is Your Last Account',
-          'In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?',
-          'I\'m Sure',
-          'Cancel',
+          'Внимание<br>Вы точно хотите выйти',
+          'Выйди из аккаунта Вам нужно будет снова заходить в него.<br><br>Вы уверены, что хотите выйти?',
+          'Подтвердить',
+          'Отмена',
         );
         setOverlayHandler(() => {
           processLogOut(val, isLastAccount);
@@ -425,7 +412,6 @@ function populateAuthAccounts() {
   if (authKeys.length === 0) {
     return;
   }
-  const selectedUUID = ConfigManager.getSelectedAccount().uuid;
 
   let authAccountStr = '';
 
@@ -438,18 +424,20 @@ function populateAuthAccounts() {
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
                     <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Username</div>
+                        <div class="settingsAuthAccountDetailTitle">Никнейм</div>
                         <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
                     </div>
                     <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">UUID</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.uuid}</div>
+                        <div class="settingsAuthAccountDetailTitle">Привилегия</div>
+                        <div class="settingsAuthAccountDetailValue">${acc.role}</div>
                     </div>
-                </div>
-                <div class="settingsAuthAccountActions">
-                    <button class="settingsAuthAccountSelect" ${selectedUUID === acc.uuid ? 'selected>Selected Account &#10004;' : '>Select Account'}</button>
-                    <div class="settingsAuthAccountWrapper">
-                        <button class="settingsAuthAccountLogOut">Log Out</button>
+                    <div class="settingsAuthAccountDetailPane">
+                        <div class="settingsAuthAccountDetailTitle">Баланс</div>
+                        <div class="settingsAuthAccountDetailValue">${acc.balance}</div>
+                    </div>
+                    <div class="settingsAuthAccountDetailPane">
+                        <div class="settingsAuthAccountDetailTitle">Дата регистрации</div>
+                        <div class="settingsAuthAccountDetailValue">${acc.registerDate}</div>
                     </div>
                 </div>
             </div>

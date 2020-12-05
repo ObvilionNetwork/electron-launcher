@@ -84,7 +84,7 @@ function setLaunchEnabled(val) {
 document.getElementById('launch_button').addEventListener('click', (e) => {
   loggerLanding.log('Launching game..');
 
-  const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion();
+  const mcVersion = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getVersion();
   const jExe = ConfigManager.getJavaExecutable();
 
   if (jExe == null) {
@@ -94,15 +94,24 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
     toggleLaunchArea(true);
     setLaunchPercentage(0, 100);
 
-    const jg = new JavaGuard(mcVersion);
-    jg._validateJavaBinary(jExe).then((v) => {
-      loggerLanding.log('Java version meta', v);
-      if (v.valid) {
-        dlAsync();
-      } else {
-        asyncSystemScan(mcVersion);
-      }
+    const downloader = new ClientManager.ClientDownloader(
+       ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    );
+
+    downloader.on('download', (t) => {
+      console.log(t)
+      setLaunchDetails(t.path);
+    })
+
+    downloader.on('complete', () => {
+      setLaunchDetails('Загрузка закончена');
+    })
+
+    downloader.on('start', () => {
+
     });
+
+    downloader.start();
   }
 });
 
@@ -111,7 +120,6 @@ document.getElementById('settingsMediaButton').onclick = (e) => {
   prepareSettings();
   switchView(getCurrentView(), VIEWS.settings);
 };
-
 // Bind avatar overlay button.
 document.getElementById('avatarOverlay').onclick = (e) => {
   prepareSettings();
@@ -119,7 +127,6 @@ document.getElementById('avatarOverlay').onclick = (e) => {
     settingsNavItemListener(document.getElementById('settingsNavAccount'), false);
   });
 };
-
 // Bind selected account
 function updateSelectedAccount(authUser) {
   let username = 'Аккаунт не выбран';
@@ -152,13 +159,12 @@ function updateSelectedServer(serv) {
   setLaunchEnabled(serv != null);
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '\u2022 Loading..';
+server_selection_button.innerHTML = '\u2022 Загрузка..';
 server_selection_button.onclick = (e) => {
   e.target.blur();
   toggleServerSelection(true);
 };
 
-// TODO
 const refreshServerStatus = async (fade = false) => {
   loggerLanding.log('Refreshing Server Status');
   const serv = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer());
@@ -189,7 +195,6 @@ const refreshServerStatus = async (fade = false) => {
     document.getElementById('player_count').innerHTML = pVal;
   }
 }
-
 const serverStatusListener = setInterval(() => refreshServerStatus(true), 300000);
 
 /**
@@ -202,7 +207,7 @@ function showLaunchFailure(title, desc) {
   setOverlayContent(
     title,
     desc,
-    'Okay',
+    'Окей',
   );
   setOverlayHandler(null);
   toggleOverlay(true);
@@ -212,7 +217,6 @@ function showLaunchFailure(title, desc) {
 /* System (Java) Scan */
 
 let sysAEx;
-let scanAt;
 
 let extractListener;
 
