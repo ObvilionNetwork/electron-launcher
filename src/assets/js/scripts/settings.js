@@ -297,7 +297,9 @@ settingsNavDone.onclick = () => {
   ConfigManager.save();
   saveDropinModConfiguration();
   saveShaderpackSettings();
+
   switchView(getCurrentView(), VIEWS.landing);
+  frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0)';
 };
 
 /**
@@ -317,8 +319,7 @@ function bindAuthAccountSelect() {
           selectBtns[i].innerHTML = 'Select Account';
         }
       }
-      val.setAttribute('selected', '');
-      val.innerHTML = 'Selected Account &#10004;';
+
       setSelectedAccount(val.closest('.settingsAuthAccount').getAttribute('uuid'));
     };
   });
@@ -336,19 +337,22 @@ function bindAuthAccountLogOut() {
       if (Object.keys(ConfigManager.getAuthAccounts()).length === 1) {
         isLastAccount = true;
         setOverlayContent(
-          'Внимание<br>Вы точно хотите выйти',
-          'Выйди из аккаунта Вам нужно будет снова заходить в него.<br><br>Вы уверены, что хотите выйти?',
-          'Подтвердить',
+          'Внимание!<br>Вы точно хотите выйти?',
+          'Выходя из аккаунта Вам нужно будет снова вводить логин и пароль.<br><br>Вы уверены, что хотите выйти?',
+          'Да, уверен',
           'Отмена',
         );
+
         setOverlayHandler(() => {
           processLogOut(val, isLastAccount);
           toggleOverlay(false);
           switchView(getCurrentView(), VIEWS.login);
         });
+
         setDismissHandler(() => {
           toggleOverlay(false);
         });
+
         toggleOverlay(true, true);
       } else {
         processLogOut(val, isLastAccount);
@@ -367,6 +371,7 @@ function processLogOut(val, isLastAccount) {
   const parent = val.closest('.settingsAuthAccount');
   const uuid = parent.getAttribute('uuid');
   const prevSelAcc = ConfigManager.getSelectedAccount();
+
   AuthManager.removeAccount(uuid).then(() => {
     if (!isLastAccount && uuid === prevSelAcc.uuid) {
       const selAcc = ConfigManager.getSelectedAccount();
@@ -443,6 +448,12 @@ function populateAuthAccounts() {
                             <div class="settingsAuthAccountDetailTitle">Дата регистрации</div>
                             <div class="settingsAuthAccountDetailValue">${acc.registerDate}</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="settingsAuthAccountActions">
+                    <div class="settingsAuthAccountWrapper">
+                        <button class="settingsAuthAccountLogOut">Выйти</button>
                     </div>
                 </div>
             </div>

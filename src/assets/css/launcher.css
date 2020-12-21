@@ -1420,19 +1420,41 @@ input:checked + .toggleSwitchSlider:before {
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
+    float: right;
 }
+
+.settingsAuthAccountLC {
+    opacity: 0;
+    border: 1px solid rgb(55, 198, 241);
+    color: rgb(55, 198, 241);
+    background: none;
+    font-size: 12px;
+    border-radius: 3px;
+    font-family: 'CeraPro Medium';
+    transition: 0.25s ease;
+    cursor: pointer;
+    outline: none;
+    float: right;
+}
+
 .settingsAuthAccountLogOut:hover,
 .settingsAuthAccountLogOut:focus {
-    box-shadow: 0px 0px 20px rgb(241, 55, 55);
-    background: rgba(241, 55, 55, 0.25);
+    box-shadow: 0px 0px 20px rgb(185, 47, 47);
+    background: rgba(185, 47, 47, 0.25);
 }
+.settingsAuthAccountLC:hover,
+.settingsAuthAccountLC:focus {
+    box-shadow: 0px 0px 20px rgb(83, 188, 222);
+    background: rgba(55, 241, 235, 0.25);
+}
+
 .settingsAuthAccountLogOut:active {
     box-shadow: 0px 0px 20px rgb(185, 47, 47);
     background: rgba(185, 47, 47, 0.25);
     border: 1px solid rgb(185, 47, 47);
     color: rgb(185, 47, 47);
 }
-.settingsAuthAccount:hover .settingsAuthAccountLogOut {
+.settingsAuthAccount:hover .settingsAuthAccountLogOut, .settingsAuthAccount:hover .settingsAuthAccountLC {
     opacity: 1;
 }
 
