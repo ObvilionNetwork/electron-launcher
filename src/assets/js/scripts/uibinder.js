@@ -70,7 +70,6 @@ function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, on
     });
   });
 }
-
 /**
  * Get the currently shown view container.
  *
