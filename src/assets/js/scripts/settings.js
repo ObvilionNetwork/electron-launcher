@@ -342,17 +342,14 @@ function bindAuthAccountLogOut() {
           'Да, уверен',
           'Отмена',
         );
-
         setOverlayHandler(() => {
           processLogOut(val, isLastAccount);
           toggleOverlay(false);
           switchView(getCurrentView(), VIEWS.login);
         });
-
         setDismissHandler(() => {
           toggleOverlay(false);
         });
-
         toggleOverlay(true, true);
       } else {
         processLogOut(val, isLastAccount);
@@ -371,7 +368,6 @@ function processLogOut(val, isLastAccount) {
   const parent = val.closest('.settingsAuthAccount');
   const uuid = parent.getAttribute('uuid');
   const prevSelAcc = ConfigManager.getSelectedAccount();
-
   AuthManager.removeAccount(uuid).then(() => {
     if (!isLastAccount && uuid === prevSelAcc.uuid) {
       const selAcc = ConfigManager.getSelectedAccount();
@@ -422,7 +418,14 @@ function populateAuthAccounts() {
 
   authKeys.map((val) => {
     const acc = authAccounts[val];
-    authAccountStr += `<div class="settingsAuthAccount" uuid="${acc.uuid}">
+
+    fetch('https://obvilionnetwork.ru/api/users/@me', {
+      headers: {
+        Authorization: acc.accessToken
+      }
+    }).then(value => {
+      value.json().then(info => {
+        authAccountStr += `<div class="settingsAuthAccount" uuid="${acc.uuid}">
             <div class="settingsAuthAccountLeft">
                 <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://crafatar.com/renders/body/${acc.uuid}?scale=3&default=MHF_Steve&overlay">
             </div>
@@ -435,18 +438,18 @@ function populateAuthAccounts() {
                         </div>
                         <div class="settingsAuthAccountDetailPane">
                             <div class="settingsAuthAccountDetailTitle">Привилегия</div>
-                            <div class="settingsAuthAccountDetailValue">${acc.role}</div>
+                            <div class="settingsAuthAccountDetailValue">${info.group ? info.group.name : 'Игрок'}</div>
                         </div>
                     </div>
                     
                     <div class="settingsAuthAccountColumnRight">
                         <div class="settingsAuthAccountDetailPane">
                             <div class="settingsAuthAccountDetailTitle">Баланс</div>
-                            <div class="settingsAuthAccountDetailValue">${acc.balance}</div>
+                            <div class="settingsAuthAccountDetailValue">${info.money} руб.</div>
                         </div>
                         <div class="settingsAuthAccountDetailPane">
                             <div class="settingsAuthAccountDetailTitle">Дата регистрации</div>
-                            <div class="settingsAuthAccountDetailValue">${acc.registerDate}</div>
+                            <div class="settingsAuthAccountDetailValue">${new Date(info.createDate).toLocaleDateString('ru-RU')}</div>
                         </div>
                     </div>
                 </div>
@@ -458,7 +461,10 @@ function populateAuthAccounts() {
                 </div>
             </div>
         </div>`;
-  });
+        settingsCurrentAccounts.innerHTML = authAccountStr;
+      });
+      });
+    });
 
   settingsCurrentAccounts.innerHTML = authAccountStr;
 }
