@@ -423,21 +423,26 @@ function populateAuthAccounts() {
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Никнейм</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
+                    <div class="settingsAuthAccountColumnLeft">
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Никнейм</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
+                        </div>
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Привилегия</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.role}</div>
+                        </div>
                     </div>
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Привилегия</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.role}</div>
-                    </div>
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Баланс</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.balance}</div>
-                    </div>
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Дата регистрации</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.registerDate}</div>
+                    
+                    <div class="settingsAuthAccountColumnRight">
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Баланс</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.balance}</div>
+                        </div>
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Дата регистрации</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.registerDate}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -611,9 +616,7 @@ function _saveModConfiguration(modConf) {
 }
 
 // Drop-in mod elements.
-
 let CACHE_SETTINGS_MODS_DIR;
-let CACHE_DROPIN_MODS;
 
 /**
  * Resolve any located drop-in mods for this server and
@@ -648,37 +651,6 @@ function bindDropinModsRemoveButton() {
 }
 
 /**
- * Bind functionality to the file system button for the selected
- * server configuration.
- */
-function bindDropinModFileSystemButton() {
-  const fsBtn = document.getElementById('settingsDropinFileSystemButton');
-  fsBtn.onclick = () => {
-    DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR);
-    shell.openPath(CACHE_SETTINGS_MODS_DIR);
-  };
-  fsBtn.ondragenter = (e) => {
-    e.dataTransfer.dropEffect = 'move';
-    fsBtn.setAttribute('drag', '');
-    e.preventDefault();
-  };
-  fsBtn.ondragover = (e) => {
-    e.preventDefault();
-  };
-  fsBtn.ondragleave = (e) => {
-    fsBtn.removeAttribute('drag');
-  };
-
-  fsBtn.ondrop = (e) => {
-    fsBtn.removeAttribute('drag');
-    e.preventDefault();
-
-    DropinModUtil.addDropinMods(e.dataTransfer.files, CACHE_SETTINGS_MODS_DIR);
-    reloadDropinMods();
-  };
-}
-
-/**
  * Save drop-in mod states. Enabling and disabling is just a matter
  * of adding/removing the .disabled extension.
  */
@@ -701,7 +673,6 @@ document.addEventListener('keydown', (e) => {
 function reloadDropinMods() {
   resolveDropinModsForUI();
   bindDropinModsRemoveButton();
-  bindDropinModFileSystemButton();
   bindModsToggleSwitch();
 }
 
@@ -829,7 +800,6 @@ function prepareModsTab(first) {
   resolveDropinModsForUI();
   resolveShaderpacksForUI();
   bindDropinModsRemoveButton();
-  bindDropinModFileSystemButton();
   bindShaderpackButton();
   bindModsToggleSwitch();
   loadSelectedServerOnModsTab();

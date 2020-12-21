@@ -74,7 +74,7 @@ body, button {
     z-index: 100;
     display: flex;
     flex-direction: column;
-    transition: background-color 1s ease;
+    transition: background-color 0.8s ease;
     -webkit-user-select: none;
 }
 
@@ -1361,6 +1361,9 @@ input:checked + .toggleSwitchSlider:before {
 .settingsAuthAccountDetailPane {
     display: flex;
     flex-direction: column;
+    float: left;
+    margin-left: 1vw;
+    width: 14vw;
 }
 .settingsAuthAccountDetailTitle {
     font-size: 12px;
@@ -1530,14 +1533,11 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Mod elements sub-containers. */
-#settingsReqModsContainer,
-#settingsOptModsContainer,
-#settingsDropinModsContainer {
+#settingsOptModsContainer {
     padding-bottom: 25px;
 }
 
 /* Main content containers for mod elements. */
-#settingsReqModsContent,
 #settingsOptModsContent,
 #settingsDropinModsContent {
     font-size: 12px;

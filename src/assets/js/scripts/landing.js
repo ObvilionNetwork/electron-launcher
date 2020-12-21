@@ -115,17 +115,29 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
   }
 });
 
+const frameBar = document.getElementById('frameBar');
+
 // Bind settings button
 document.getElementById('settingsMediaButton').onclick = (e) => {
   prepareSettings();
   switchView(getCurrentView(), VIEWS.settings);
+
+  setTimeout(() => {
+    frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  }, 540);
 };
+
 // Bind avatar overlay button.
 document.getElementById('avatarOverlay').onclick = (e) => {
   prepareSettings();
+
   switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
     settingsNavItemListener(document.getElementById('settingsNavAccount'), false);
   });
+
+  setTimeout(() => {
+    frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  }, 540);
 };
 // Bind selected account
 function updateSelectedAccount(authUser) {

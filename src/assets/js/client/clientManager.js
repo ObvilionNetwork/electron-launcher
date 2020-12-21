@@ -132,6 +132,14 @@ class Client {
       return this.mods;
    }
 
+   getOther() {
+      return this.other;
+   }
+
+   getAssets() {
+      return this.assets;
+   }
+
    getServerIP() {
       return this.address;
    }
@@ -172,6 +180,7 @@ class ClientDownloader {
    constructor(client) {
       this.client = client;
       this.clientDir = path.join(ConfigManager.getInstanceDirectory(), this.client.getName());
+      this.assetsDir = path.join(ConfigManager.getInstanceDirectory(), 'assets', this.client.getVersion());
    }
 
    async start() {
@@ -194,6 +203,12 @@ class ClientDownloader {
 
       logger.info('Downloading Mods...');
       await this.downloadAll(this.client.getMods());
+
+      logger.info('Downloading Other files...');
+      await this.downloadAll(this.client.getOther());
+
+      logger.info('Downloading Assets...');
+      await this.downloadAll(this.client.getAssets());
 
       this.onComplete.forEach(c => {
          c();
@@ -220,7 +235,7 @@ class ClientDownloader {
       cmd += `--username ${ConfigManager.getSelectedAccount().username} `;
       cmd += `--version ${this.client.getCore().type} ${this.client.getVersion()} `;
       cmd += `--gameDir ${this.clientDir} `;
-      //cmd += "--assetsDir  ";
+      cmd += `--assetsDir  ${this.assetsDir}`;
       cmd += `--assetIndex ${this.client.getVersion()} `;
       cmd += `--uuid ${ConfigManager.getSelectedAccount().uuid} `;
       cmd += `--accessToken ${ConfigManager.getSelectedAccount().accessToken} `;
@@ -244,7 +259,6 @@ class ClientDownloader {
          } else {
             const libs2 = fs.readdirSync(path.join(libFiles, lib));
             for (const lib2 of libs2) {
-               const stats2 = fs.statSync(path.join(libFiles, lib, lib2));
                cp += path.join(libFiles, lib, lib2) + ';'
             }
          }

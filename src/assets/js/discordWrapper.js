@@ -23,7 +23,7 @@ function init() {
    rpc.on('ready', () => {
       rpc.setActivity(activity);
 
-      logger.log(`Rich Prescence is on: ${rpc.user.username}`);
+      logger.log(`Rich Presence is on: ${rpc.user.username}`);
    });
 
    rpc.login({
