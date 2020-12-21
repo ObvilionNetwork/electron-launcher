@@ -13,6 +13,10 @@ function getStatus(address, port = 25565) {
     port = parseInt(port, 10);
   }
 
+  if (isNaN(port)) {
+    port = 25565;
+  }
+
   return new Promise((resolve, reject) => {
     const socket = net.connect(port, address, () => {
       const buff = Buffer.from([0xFE, 0x01]);

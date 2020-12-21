@@ -462,6 +462,7 @@ function populateAuthAccounts() {
             </div>
         </div>`;
         settingsCurrentAccounts.innerHTML = authAccountStr;
+        bindAuthAccountLogOut();
       });
       });
     });
@@ -475,7 +476,6 @@ function populateAuthAccounts() {
 function prepareAccountsTab() {
   populateAuthAccounts();
   bindAuthAccountSelect();
-  bindAuthAccountLogOut();
 }
 
 /**
