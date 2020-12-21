@@ -4,7 +4,7 @@ const os = require('os');
 const path = require('path');
 
 const ConfigManager = require('./configmanager');
-const DistroManager = require('./distromanager');
+const ClientManager = require('./client/clientManager');
 const LangLoader = require('./langloader');
 const logger = require('./loggerutil')('%c[Preloader]', 'color: #a02d2a; font-weight: bold');
 
@@ -21,35 +21,16 @@ function onDistroLoad(data) {
     // Resolve the selected server if its value has yet to be set.
     if (ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null) {
       logger.log('Determining default selected server..');
-      ConfigManager.setSelectedServer(data.getMainServer().getID());
+      ConfigManager.setSelectedServer(data.servers[0].name);
       ConfigManager.save();
     }
   }
   ipcRenderer.send('distributionIndexDone', data != null);
 }
 
-// Ensure Distribution is downloaded and cached.
-DistroManager.pullRemote().then((data) => {
+ClientManager.init().then((data) => {
   logger.log('Loaded distribution index.');
-
   onDistroLoad(data);
-}).catch((err) => {
-  logger.log('Failed to load distribution index.');
-  logger.error(err);
-
-  logger.log('Attempting to load an older version of the distribution index.');
-  // Try getting a local copy, better than nothing.
-  DistroManager.pullLocal().then((data) => {
-    logger.log('Successfully loaded an older version of the distribution index.');
-
-    onDistroLoad(data);
-  }).catch((err) => {
-    logger.log('Failed to load an older version of the distribution index.');
-    logger.log('Application cannot run.');
-    logger.error(err);
-
-    onDistroLoad(null);
-  });
 });
 
 // Clean up temp dir incase previous launches ended unexpectedly.

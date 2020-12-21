@@ -21,7 +21,6 @@ function getStatus(address, port = 25565) {
 
     socket.setTimeout(2500, () => {
       socket.end();
-      // eslint-disable-next-line prefer-promise-reject-errors
       reject({
         code: 'ETIMEDOUT',
         errno: 'ETIMEDOUT',
@@ -31,7 +30,7 @@ function getStatus(address, port = 25565) {
     });
 
     socket.on('data', (data) => {
-      if (!data) {
+      if (data) {
         const serverInfo = data.toString().split('\x00\x00\x00');
         const NUM_FIELDS = 6;
         if (serverInfo != null && serverInfo.length >= NUM_FIELDS) {

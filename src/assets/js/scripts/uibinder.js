@@ -7,9 +7,9 @@ const path = require('path');
 
 const AuthManager = require('./assets/js/authmanager');
 const ConfigManager = require('./assets/js/configmanager');
-const DistroManager = require('./assets/js/distromanager');
 const Lang = require('./assets/js/langloader');
 const DiscordWrapper = require('./assets/js/discordWrapper');
+const ClientManager = require('./assets/js/client/clientManager');
 
 let rscShouldLoad = false;
 let fatalStartupError = false;
@@ -92,7 +92,6 @@ function showMainUI(data) {
   updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()));
   refreshServerStatus();
   setTimeout(() => {
-    document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`;
     $('#main').show();
 
@@ -409,7 +408,7 @@ document.addEventListener('readystatechange', () => {
     if (rscShouldLoad) {
       rscShouldLoad = false;
       if (!fatalStartupError) {
-        const data = DistroManager.getDistribution();
+        const data = ClientManager.getDistribution();
         showMainUI(data);
       } else {
         showFatalStartupError();
@@ -421,8 +420,8 @@ document.addEventListener('readystatechange', () => {
 // Actions that must be performed after the distribution index is downloaded.
 ipcRenderer.on('distributionIndexDone', (event, res) => {
   if (res) {
-    const data = DistroManager.getDistribution();
-    syncModConfigurations(data);
+    const data = ClientManager.getDistribution();
+    //syncModConfigurations(data); TODO
     if (document.readyState === 'interactive' || document.readyState === 'complete') {
       showMainUI(data);
     } else {

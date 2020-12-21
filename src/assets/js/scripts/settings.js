@@ -2,9 +2,6 @@
 const os = require('os');
 const semver = require('semver');
 
-const { JavaGuard } = require('./assets/js/assetguard');
-const DropinModUtil = require('./assets/js/dropinmodutil');
-
 const settingsState = {
   invalid: new Set(),
 };
@@ -304,19 +301,6 @@ settingsNavDone.onclick = () => {
 };
 
 /**
- * Account Management Tab
- */
-
-// Bind the add account button.
-document.getElementById('settingsAddAccount').onclick = (e) => {
-  switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-    loginViewOnCancel = VIEWS.settings;
-    loginViewOnSuccess = VIEWS.settings;
-    loginCancelEnabled(true);
-  });
-};
-
-/**
  * Bind functionality for the account selection buttons. If another account
  * is selected, the UI of the previously selected account will be updated.
  */
@@ -352,10 +336,10 @@ function bindAuthAccountLogOut() {
       if (Object.keys(ConfigManager.getAuthAccounts()).length === 1) {
         isLastAccount = true;
         setOverlayContent(
-          'Warning<br>This is Your Last Account',
-          'In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?',
-          'I\'m Sure',
-          'Cancel',
+          'Внимание<br>Вы точно хотите выйти',
+          'Выйди из аккаунта Вам нужно будет снова заходить в него.<br><br>Вы уверены, что хотите выйти?',
+          'Подтвердить',
+          'Отмена',
         );
         setOverlayHandler(() => {
           processLogOut(val, isLastAccount);
@@ -428,7 +412,6 @@ function populateAuthAccounts() {
   if (authKeys.length === 0) {
     return;
   }
-  const selectedUUID = ConfigManager.getSelectedAccount().uuid;
 
   let authAccountStr = '';
 
@@ -440,19 +423,26 @@ function populateAuthAccounts() {
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Username</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
+                    <div class="settingsAuthAccountColumnLeft">
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Никнейм</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
+                        </div>
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Привилегия</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.role}</div>
+                        </div>
                     </div>
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">UUID</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.uuid}</div>
-                    </div>
-                </div>
-                <div class="settingsAuthAccountActions">
-                    <button class="settingsAuthAccountSelect" ${selectedUUID === acc.uuid ? 'selected>Selected Account &#10004;' : '>Select Account'}</button>
-                    <div class="settingsAuthAccountWrapper">
-                        <button class="settingsAuthAccountLogOut">Log Out</button>
+                    
+                    <div class="settingsAuthAccountColumnRight">
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Баланс</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.balance}</div>
+                        </div>
+                        <div class="settingsAuthAccountDetailPane">
+                            <div class="settingsAuthAccountDetailTitle">Дата регистрации</div>
+                            <div class="settingsAuthAccountDetailValue">${acc.registerDate}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -495,19 +485,21 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
 
 const settingsModsContainer = document.getElementById('settingsModsContainer');
 
+
+//TODO
 /**
  * Resolve and update the mods on the UI.
  */
 function resolveModsForUI() {
   const serv = ConfigManager.getSelectedServer();
 
-  const distro = DistroManager.getDistribution();
+  const distro = ClientManager.getDistribution();
   const servConf = ConfigManager.getModConfiguration(serv);
 
-  const modStr = parseModulesForUI(distro.getServer(serv).getModules(), false, servConf.mods);
+  //const modStr = parseModulesForUI(distro.getServer(serv).getModules(), false, servConf.mods);
 
-  document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods;
-  document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods;
+  //document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods;
+  //document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods;
 }
 
 /**
@@ -595,10 +587,10 @@ function bindModsToggleSwitch() {
  * Save the mod configuration based on the UI values.
  */
 function saveModConfiguration() {
-  const serv = ConfigManager.getSelectedServer();
-  const modConf = ConfigManager.getModConfiguration(serv);
-  modConf.mods = _saveModConfiguration(modConf.mods);
-  ConfigManager.setModConfiguration(serv, modConf);
+  //const serv = ConfigManager.getSelectedServer();
+  //const modConf = ConfigManager.getModConfiguration(serv);
+  //modConf.mods = _saveModConfiguration(modConf.mods);
+  //ConfigManager.setModConfiguration(serv, modConf);
 }
 
 /**
@@ -624,42 +616,14 @@ function _saveModConfiguration(modConf) {
 }
 
 // Drop-in mod elements.
-
 let CACHE_SETTINGS_MODS_DIR;
-let CACHE_DROPIN_MODS;
 
 /**
  * Resolve any located drop-in mods for this server and
  * populate the results onto the UI.
  */
 function resolveDropinModsForUI() {
-  const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
-  CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID(), 'mods');
-  CACHE_DROPIN_MODS = DropinModUtil.scanForDropinMods(CACHE_SETTINGS_MODS_DIR, serv.getMinecraftVersion());
-
-  let dropinMods = '';
-
-  for (dropin of CACHE_DROPIN_MODS) {
-    dropinMods += `<div id="${dropin.fullName}" class="settingsBaseMod settingsDropinMod" ${!dropin.disabled ? 'enabled' : ''}>
-                    <div class="settingsModContent">
-                        <div class="settingsModMainWrapper">
-                            <div class="settingsModStatus"></div>
-                            <div class="settingsModDetails">
-                                <span class="settingsModName">${dropin.name}</span>
-                                <div class="settingsDropinRemoveWrapper">
-                                    <button class="settingsDropinRemoveButton" remmod="${dropin.fullName}">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                        <label class="toggleSwitch">
-                            <input type="checkbox" formod="${dropin.fullName}" dropin ${!dropin.disabled ? 'checked' : ''}>
-                            <span class="toggleSwitchSlider"></span>
-                        </label>
-                    </div>
-                </div>`;
-  }
-
-  document.getElementById('settingsDropinModsContent').innerHTML = dropinMods;
+  //TODO
 }
 
 /**
@@ -687,60 +651,11 @@ function bindDropinModsRemoveButton() {
 }
 
 /**
- * Bind functionality to the file system button for the selected
- * server configuration.
- */
-function bindDropinModFileSystemButton() {
-  const fsBtn = document.getElementById('settingsDropinFileSystemButton');
-  fsBtn.onclick = () => {
-    DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR);
-    shell.openPath(CACHE_SETTINGS_MODS_DIR);
-  };
-  fsBtn.ondragenter = (e) => {
-    e.dataTransfer.dropEffect = 'move';
-    fsBtn.setAttribute('drag', '');
-    e.preventDefault();
-  };
-  fsBtn.ondragover = (e) => {
-    e.preventDefault();
-  };
-  fsBtn.ondragleave = (e) => {
-    fsBtn.removeAttribute('drag');
-  };
-
-  fsBtn.ondrop = (e) => {
-    fsBtn.removeAttribute('drag');
-    e.preventDefault();
-
-    DropinModUtil.addDropinMods(e.dataTransfer.files, CACHE_SETTINGS_MODS_DIR);
-    reloadDropinMods();
-  };
-}
-
-/**
  * Save drop-in mod states. Enabling and disabling is just a matter
  * of adding/removing the .disabled extension.
  */
 function saveDropinModConfiguration() {
-  for (dropin of CACHE_DROPIN_MODS) {
-    const dropinUI = document.getElementById(dropin.fullName);
-    if (dropinUI != null) {
-      const dropinUIEnabled = dropinUI.hasAttribute('enabled');
-      if (DropinModUtil.isDropinModEnabled(dropin.fullName) != dropinUIEnabled) {
-        DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR, dropin.fullName, dropinUIEnabled).catch((err) => {
-          if (!isOverlayVisible()) {
-            setOverlayContent(
-              'Failed to Toggle<br>One or More Drop-in Mods',
-              err.message,
-              'Okay',
-            );
-            setOverlayHandler(null);
-            toggleOverlay(true);
-          }
-        });
-      }
-    }
-  }
+
 }
 
 // Refresh the drop-in mods when F5 is pressed.
@@ -758,7 +673,6 @@ document.addEventListener('keydown', (e) => {
 function reloadDropinMods() {
   resolveDropinModsForUI();
   bindDropinModsRemoveButton();
-  bindDropinModFileSystemButton();
   bindModsToggleSwitch();
 }
 
@@ -772,12 +686,8 @@ let CACHE_SELECTED_SHADERPACK;
  * Load shaderpack information.
  */
 function resolveShaderpacksForUI() {
-  const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
+  const serv = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer());
   CACHE_SETTINGS_INSTANCE_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID());
-  CACHE_SHADERPACKS = DropinModUtil.scanForShaderpacks(CACHE_SETTINGS_INSTANCE_DIR);
-  CACHE_SELECTED_SHADERPACK = DropinModUtil.getEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR);
-
-  setShadersOptions(CACHE_SHADERPACKS, CACHE_SELECTED_SHADERPACK);
 }
 
 function setShadersOptions(arr, selected) {
@@ -804,13 +714,7 @@ function setShadersOptions(arr, selected) {
 }
 
 function saveShaderpackSettings() {
-  let sel = 'OFF';
-  for (const opt of document.getElementById('settingsShadersOptions').childNodes) {
-    if (opt.hasAttribute('selected')) {
-      sel = opt.getAttribute('value');
-    }
-  }
-  DropinModUtil.setEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR, sel);
+
 }
 
 function bindShaderpackButton() {
@@ -848,7 +752,7 @@ function bindShaderpackButton() {
  * Load the currently selected server information onto the mods tab.
  */
 function loadSelectedServerOnModsTab() {
-  const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
+  const serv = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer());
 
   document.getElementById('settingsSelServContent').innerHTML = `
         <img class="serverListingImg" src="${serv.getIcon()}"/>
@@ -856,7 +760,7 @@ function loadSelectedServerOnModsTab() {
             <span class="serverListingName">${serv.getName()}</span>
             <span class="serverListingDescription">${serv.getDescription()}</span>
             <div class="serverListingInfo">
-                <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
+                <div class="serverListingVersion">${serv.getVersion()}</div>
             </div>
         </div>
     `;
@@ -896,7 +800,6 @@ function prepareModsTab(first) {
   resolveDropinModsForUI();
   resolveShaderpacksForUI();
   bindDropinModsRemoveButton();
-  bindDropinModFileSystemButton();
   bindShaderpackButton();
   bindModsToggleSwitch();
   loadSelectedServerOnModsTab();
@@ -917,13 +820,10 @@ const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM();
-const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM();
 
 // Set the max and min values for the ranged sliders.
 settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY);
-settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY);
 settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY);
-settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY);
 
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
@@ -939,7 +839,7 @@ settingsMinRAMRange.onchange = (e) => {
   // Change range bar color based on the selected value.
   if (sMinV >= max / 2) {
     bar.style.background = '#e86060';
-  } else if (sMinV >= max / 4) {
+  } else if (sMinV >= max / 2.4) {
     bar.style.background = '#e8e18b';
   } else {
     bar.style.background = null;
@@ -971,7 +871,7 @@ settingsMaxRAMRange.onchange = (e) => {
   // Change range bar color based on the selected value.
   if (sMaxV >= max / 2) {
     bar.style.background = '#e86060';
-  } else if (sMaxV >= max / 4) {
+  } else if (sMaxV >= max / 2.4) {
     bar.style.background = '#e8e18b';
   } else {
     bar.style.background = null;
@@ -1101,19 +1001,7 @@ function populateMemoryStatus() {
  * @param {string} execPath The executable path to populate against.
  */
 function populateJavaExecDetails(execPath) {
-  const jg = new JavaGuard(DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion());
-  jg._validateJavaBinary(execPath).then((v) => {
-    if (v.valid) {
-      const vendor = v.vendor != null ? ` (${v.vendor})` : '';
-      if (v.version.major < 9) {
-        settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})${vendor}`;
-      } else {
-        settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})${vendor}`;
-      }
-    } else {
-      settingsJavaExecDetails.innerHTML = 'Invalid Selection';
-    }
-  });
+
 }
 
 /**

@@ -175,7 +175,7 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
   const listings = document.getElementsByClassName('serverListing');
   for (let i = 0; i < listings.length; i++) {
     if (listings[i].hasAttribute('selected')) {
-      const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'));
+      const serv = ClientManager.getDistribution().getServer(listings[i].getAttribute('servid'));
       updateSelectedServer(serv);
       refreshServerStatus(true);
       toggleOverlay(false);
@@ -184,7 +184,7 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
   }
   // None are selected? Not possible right? Meh, handle it.
   if (listings.length > 0) {
-    const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'));
+    const serv = ClientManager.getDistribution().getServer(listings[i].getAttribute('servid'));
     updateSelectedServer(serv);
     toggleOverlay(false);
   }
@@ -262,7 +262,7 @@ function setAccountListingHandlers() {
 }
 
 function populateServerListings() {
-  const distro = DistroManager.getDistribution();
+  const distro = ClientManager.getDistribution();
   const giaSel = ConfigManager.getSelectedServer();
   const servers = distro.getServers();
   let htmlString = '';
@@ -273,7 +273,7 @@ function populateServerListings() {
                 <span class="serverListingName">${serv.getName()}</span>
                 <span class="serverListingDescription">${serv.getDescription()}</span>
                 <div class="serverListingInfo">
-                    <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
+                    <div class="serverListingVersion">${serv.getVersion()}</div>
                 </div>
             </div>
         </button>`;

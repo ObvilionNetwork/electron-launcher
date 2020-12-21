@@ -317,6 +317,10 @@ exports.getAuthAccount = function (uuid) {
   return config.authenticationDatabase[uuid];
 };
 
+exports.getSelectedAuthAccount = function () {
+   return config.authenticationDatabase[config.selectedAccount];
+};
+
 /**
  * Update the access token of an authenticated account.
  *

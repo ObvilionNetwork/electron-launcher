@@ -7,8 +7,6 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 // Internal Requirements
-const Mojang = require('./assets/js/mojang');
-const ProcessBuilder = require('./assets/js/processbuilder');
 const ServerStatus = require('./assets/js/serverstatus');
 
 // Launch Elements
@@ -85,8 +83,10 @@ function setLaunchEnabled(val) {
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', (e) => {
   loggerLanding.log('Launching game..');
-  const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion();
+
+  const mcVersion = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getVersion();
   const jExe = ConfigManager.getJavaExecutable();
+
   if (jExe == null) {
     asyncSystemScan(mcVersion);
   } else {
@@ -94,32 +94,51 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
     toggleLaunchArea(true);
     setLaunchPercentage(0, 100);
 
-    const jg = new JavaGuard(mcVersion);
-    jg._validateJavaBinary(jExe).then((v) => {
-      loggerLanding.log('Java version meta', v);
-      if (v.valid) {
-        dlAsync();
-      } else {
-        asyncSystemScan(mcVersion);
-      }
+    const downloader = new ClientManager.ClientDownloader(
+       ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    );
+
+    downloader.on('download', (t) => {
+      console.log(t)
+      setLaunchDetails(t.path);
+    })
+
+    downloader.on('complete', () => {
+      setLaunchDetails('Загрузка закончена');
+    })
+
+    downloader.on('start', () => {
+
     });
+
+    downloader.start();
   }
 });
+
+const frameBar = document.getElementById('frameBar');
 
 // Bind settings button
 document.getElementById('settingsMediaButton').onclick = (e) => {
   prepareSettings();
   switchView(getCurrentView(), VIEWS.settings);
+
+  setTimeout(() => {
+    frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  }, 540);
 };
 
 // Bind avatar overlay button.
 document.getElementById('avatarOverlay').onclick = (e) => {
   prepareSettings();
+
   switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
     settingsNavItemListener(document.getElementById('settingsNavAccount'), false);
   });
-};
 
+  setTimeout(() => {
+    frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  }, 540);
+};
 // Bind selected account
 function updateSelectedAccount(authUser) {
   let username = 'Аккаунт не выбран';
@@ -152,22 +171,21 @@ function updateSelectedServer(serv) {
   setLaunchEnabled(serv != null);
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '\u2022 Loading..';
+server_selection_button.innerHTML = '\u2022 Загрузка..';
 server_selection_button.onclick = (e) => {
   e.target.blur();
   toggleServerSelection(true);
 };
 
-// OK
 const refreshServerStatus = async (fade = false) => {
   loggerLanding.log('Refreshing Server Status');
-  const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer());
+  const serv = ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer());
 
   let pLabel = 'СЕРВЕР';
   let pVal = 'ОФФЛАЙН';
 
   try {
-    const serverURL = new URL(`my://${serv.getAddress()}`);
+    const serverURL = new URL(`my://${serv.getServerIP()}`);
     const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port);
     if (servStat.online) {
       pLabel = 'ИГРОКОВ';
@@ -189,7 +207,6 @@ const refreshServerStatus = async (fade = false) => {
     document.getElementById('player_count').innerHTML = pVal;
   }
 }
-
 const serverStatusListener = setInterval(() => refreshServerStatus(true), 300000);
 
 /**
@@ -202,7 +219,7 @@ function showLaunchFailure(title, desc) {
   setOverlayContent(
     title,
     desc,
-    'Okay',
+    'Окей',
   );
   setOverlayHandler(null);
   toggleOverlay(true);
@@ -212,7 +229,6 @@ function showLaunchFailure(title, desc) {
 /* System (Java) Scan */
 
 let sysAEx;
-let scanAt;
 
 let extractListener;
 
@@ -989,62 +1005,62 @@ function displayArticle(articleObject, index) {
  */
 function loadNews() {
   return new Promise((resolve, reject) => {
-    const distroData = DistroManager.getDistribution();
-    const newsFeed = distroData.getRSS();
-    const newsHost = `${new URL(newsFeed).origin}/`;
-    $.ajax({
-      url: newsFeed,
-      success: (data) => {
-        const items = $(data).find('item');
-        const articles = [];
-
-        for (let i = 0; i < items.length; i++) {
-          // JQuery Element
-          const el = $(items[i]);
-
-          // Resolve date.
-          const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
-          });
-
-          // Resolve comments.
-          let comments = el.find('slash\\:comments').text() || '0';
-          comments = `${comments} Comment${comments === '1' ? '' : 's'}`;
-
-          // Fix relative links in content.
-          let content = el.find('content\\:encoded').text();
-          const regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g;
-          let matches;
-          while ((matches = regex.exec(content))) {
-            content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`);
-          }
-
-          const link = el.find('link').text();
-          const title = el.find('title').text();
-          const author = el.find('dc\\:creator').text();
-
-          // Generate article.
-          articles.push(
-            {
-              link,
-              title,
-              date,
-              author,
-              content,
-              comments,
-              commentsLink: `${link}#comments`,
-            },
-          );
-        }
-        resolve({
-          articles,
-        });
-      },
-      timeout: 2500,
-    }).catch((err) => {
-      resolve({
-        articles: null,
-      });
-    });
+    // const distroData = ClientManager.getDistribution();
+    // const newsFeed = distroData.getRSS();
+    // const newsHost = `${new URL('https://obvilionnetwork.ru/api/news').origin}/`;
+    // $.ajax({
+    //   url: newsFeed,
+    //   success: (data) => {
+    //     const items = $(data).find('item');
+    //     const articles = [];
+    //
+    //     for (let i = 0; i < items.length; i++) {
+    //       // JQuery Element
+    //       const el = $(items[i]);
+    //
+    //       // Resolve date.
+    //       const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {
+    //         month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
+    //       });
+    //
+    //       // Resolve comments.
+    //       let comments = el.find('slash\\:comments').text() || '0';
+    //       comments = `${comments} Comment${comments === '1' ? '' : 's'}`;
+    //
+    //       // Fix relative links in content.
+    //       let content = el.find('content\\:encoded').text();
+    //       const regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g;
+    //       let matches;
+    //       while ((matches = regex.exec(content))) {
+    //         content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`);
+    //       }
+    //
+    //       const link = el.find('link').text();
+    //       const title = el.find('title').text();
+    //       const author = el.find('dc\\:creator').text();
+    //
+    //       // Generate article.
+    //       articles.push(
+    //         {
+    //           link,
+    //           title,
+    //           date,
+    //           author,
+    //           content,
+    //           comments,
+    //           commentsLink: `${link}#comments`,
+    //         },
+    //       );
+    //     }
+    //     resolve({
+    //       articles,
+    //     });
+    //   },
+    //   timeout: 2500,
+    // }).catch((err) => {
+    //   resolve({
+    //     articles: null,
+    //   });
+    // });
   });
 }
