@@ -173,6 +173,7 @@ class ClientDownloader {
    onStart = [];
    onDownload = [];
    onError = [];
+   onExit = [];
 
    /** @type {Client} */
    client = null;
@@ -215,11 +216,13 @@ class ClientDownloader {
       });
 
       exec(this.getCMD(), (err, stdout, stderr) => {
-
-         // the *entire* stdout and stderr (buffered)
          console.log(`stdout: ${stdout}`);
          console.log(`stderr: ${stderr}`);
-      })
+      }).addListener("exit", code => {
+         this.onExit.forEach(c => {
+            c();
+         });
+      });
    }
 
    getCMD() {
@@ -243,7 +246,6 @@ class ClientDownloader {
       cmd += "--userType legacy ";
       cmd += "--tweakClass cpw.mods.fml.common.launcher.FMLTweaker ";
 
-      logger.log(cmd)
       return cmd;
    }
 
@@ -352,6 +354,10 @@ class ClientDownloader {
 
          case 'download':
             this.onDownload.push(callback);
+            break;
+
+         case 'exit':
+            this.onExit.push(callback);
             break;
       }
 

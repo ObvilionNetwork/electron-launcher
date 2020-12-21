@@ -105,10 +105,14 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
 
     downloader.on('complete', () => {
       setLaunchDetails('Загрузка закончена');
+
+      setTimeout(() => {
+        remote.getCurrentWindow().hide();
+      }, 1000);
     })
 
-    downloader.on('start', () => {
-
+    downloader.on('exit', () => {
+      remote.getCurrentWindow().show();
     });
 
     downloader.start();
