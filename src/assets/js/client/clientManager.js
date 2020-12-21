@@ -235,7 +235,7 @@ class ClientDownloader {
       cmd += `--username ${ConfigManager.getSelectedAccount().username} `;
       cmd += `--version ${this.client.getCore().type} ${this.client.getVersion()} `;
       cmd += `--gameDir ${this.clientDir} `;
-      cmd += `--assetsDir  ${this.assetsDir}`;
+      cmd += `--assetsDir  ${this.assetsDir} `;
       cmd += `--assetIndex ${this.client.getVersion()} `;
       cmd += `--uuid ${ConfigManager.getSelectedAccount().uuid} `;
       cmd += `--accessToken ${ConfigManager.getSelectedAccount().accessToken} `;
@@ -243,6 +243,7 @@ class ClientDownloader {
       cmd += "--userType legacy ";
       cmd += "--tweakClass cpw.mods.fml.common.launcher.FMLTweaker ";
 
+      logger.log(cmd)
       return cmd;
    }
 
