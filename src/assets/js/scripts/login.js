@@ -255,6 +255,10 @@ loginButton.addEventListener('click', () => {
      $('.checkmark').toggle();
 
      setTimeout(() => {
+        frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+     }, 400);
+
+     setTimeout(() => {
         switchView(VIEWS.login, loginViewOnSuccess, 500, 500, () => {
         // Temporary workaround
         if (loginViewOnSuccess === VIEWS.settings) {
