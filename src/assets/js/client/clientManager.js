@@ -215,13 +215,9 @@ class ClientDownloader {
          c();
       });
 
-      exec(
-         this.getCMD(),
-
-         {
+      exec(this.getCMD(), {
             cwd: this.clientDir,
          },
-
          (err, stdout, stderr) => {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);

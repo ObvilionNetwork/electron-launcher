@@ -1155,7 +1155,12 @@ function settingsUpdateButtonStatus(text, disabled = false, handler = null) {
  *
  * @param {Object} data The update data.
  */
-function populateSettingsUpdateInformation(data) {
+async function populateSettingsUpdateInformation() {
+  const reqL = await fetch('https://obvilionnetwork.ru/api/launcher/latest', {
+
+  });
+  const data = await reqL.json();
+
   if (data != null) {
     settingsUpdateTitle.innerHTML = `Доступен новый ${isPrerelease(data.version) ? 'бета-Релиз' : 'Релиз'}`;
     settingsUpdateChangelogCont.style.display = null;
@@ -1171,7 +1176,7 @@ function populateSettingsUpdateInformation(data) {
       settingsUpdateButtonStatus('Скачивание..', true);
     }
   } else {
-    settingsUpdateTitle.innerHTML = 'У Вас уже запущета последняя версия лаунчера';
+    settingsUpdateTitle.innerHTML = 'У Вас уже запущена последняя версия лаунчера';
     settingsUpdateChangelogCont.style.display = 'none';
     populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck);
     settingsUpdateButtonStatus('Проверить обновления', false, () => {

@@ -113,6 +113,7 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
 
     downloader.on('exit', () => {
       remote.getCurrentWindow().show();
+      toggleLaunchArea(false);
     });
 
     downloader.start();

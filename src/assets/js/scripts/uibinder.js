@@ -123,6 +123,7 @@ function showMainUI(data) {
     } else {
       currentView = VIEWS.login;
       $(VIEWS.login).fadeIn(1000);
+      frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     }
 
     setTimeout(() => {
