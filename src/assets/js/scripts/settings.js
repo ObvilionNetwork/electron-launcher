@@ -1157,27 +1157,27 @@ function settingsUpdateButtonStatus(text, disabled = false, handler = null) {
  */
 function populateSettingsUpdateInformation(data) {
   if (data != null) {
-    settingsUpdateTitle.innerHTML = `New ${isPrerelease(data.version) ? 'Pre-release' : 'Release'} Available`;
+    settingsUpdateTitle.innerHTML = `Доступен новый ${isPrerelease(data.version) ? 'бета-Релиз' : 'Релиз'}`;
     settingsUpdateChangelogCont.style.display = null;
     settingsUpdateChangelogTitle.innerHTML = data.releaseName;
     settingsUpdateChangelogText.innerHTML = data.releaseNotes;
     populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck);
 
     if (process.platform === 'darwin') {
-      settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the dmg to update.</span>', false, () => {
+      settingsUpdateButtonStatus('Скачать с сайта<span style="font-size: 10px;color: gray;text-shadow: none !important;">Перезапустите лаунчер для обновления.</span>', false, () => {
         shell.openExternal(data.darwindownload);
       });
     } else {
-      settingsUpdateButtonStatus('Downloading..', true);
+      settingsUpdateButtonStatus('Скачивание..', true);
     }
   } else {
-    settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version';
+    settingsUpdateTitle.innerHTML = 'У Вас уже запущета последняя версия лаунчера';
     settingsUpdateChangelogCont.style.display = 'none';
     populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck);
-    settingsUpdateButtonStatus('Check for Updates', false, () => {
+    settingsUpdateButtonStatus('Проверить обновления', false, () => {
       if (!isDev) {
         ipcRenderer.send('autoUpdateAction', 'checkForUpdate');
-        settingsUpdateButtonStatus('Checking for Updates..', true);
+        settingsUpdateButtonStatus('Проверка обновлений..', true);
       }
     });
   }

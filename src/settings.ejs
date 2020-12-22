@@ -213,13 +213,13 @@
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">Launcher Settings</span>
-                <span class="settingsTabHeaderDesc">Options related to the launcher itself.</span>
+                <span class="settingsTabHeaderText">Настройки лаунчера</span>
+                <span class="settingsTabHeaderDesc">Настройки пути и обновлений лаунчера.</span>
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle">Allow Pre-Release Updates.</span>
-                    <span class="settingsFieldDesc">Pre-Releases include new features which may have not been fully tested or integrated.<br>This will always be true if you are using a pre-release version.</span>
+                    <span class="settingsFieldTitle">Разрешить бета-версии лаунчера.</span>
+                    <span class="settingsFieldDesc">Бета-версии лаунчера могут быть не стабильны и содержать ошибки.<br>Будет включено, если Вы будете использовать бета-версию лаунчера.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -230,7 +230,7 @@
             </div>
             <div class="settingsFileSelContainer">
                 <div class="settingsFileSelContent">
-                    <div class="settingsFieldTitle" id="settingsDataDirTitle">Data Directory</div>
+                    <div class="settingsFieldTitle" id="settingsDataDirTitle">Путь к Клиентам</div>
                     <div class="settingsFileSelActions">
                         <div class="settingsFileSelIcon">
                             <svg class="settingsFileSelSVG">
@@ -242,90 +242,87 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" type="text" value="null" cValue="DataDirectory" disabled>
-                        <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Choose Folder</button>
+                        <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Выбрать папку</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">All game files and local Java installations will be stored in the data directory.<br>Screenshots and world saves are stored in the instance folder for the corresponding server configuration.</div>
+                <div class="settingsFileSelDesc">Все игровые файлы и Java будут храниться в данной папке.<br>А так же скриншоты, миры, конфиг-файлы и т.д.</div>
             </div>
         </div>
         <div id="settingsTabAbout" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">About</span>
-                <span class="settingsTabHeaderDesc">View information and release notes for the current version.</span>
+                <span class="settingsTabHeaderText">Информация о лаунчере</span>
+                <span class="settingsTabHeaderDesc">Просмотр текущей версии и доступных релизов лаунчера.</span>
             </div>
             <div id="settingsAboutCurrentContainer">
                 <div id="settingsAboutCurrentContent">
                     <div id="settingsAboutCurrentHeadline">
-                        <img id="settingsAboutLogo" src="./assets/images/SealCircle.png">
-                        <span id="settingsAboutTitle">Helios Launcher</span>
+                        <img id="settingsAboutLogo" src="./assets/images/logo.png">
+                        <span id="settingsAboutTitle">Obvilion Network Launcher</span>
                     </div>
                     <div id="settingsAboutCurrentVersion">
                         <div id="settingsAboutCurrentVersionCheck">&#10003;</div>
                         <div id="settingsAboutCurrentVersionDetails">
-                            <span id="settingsAboutCurrentVersionTitle">Stable Release</span>
+                            <span id="settingsAboutCurrentVersionTitle">Стабильный релиз</span>
                             <div id="settingsAboutCurrentVersionLine">
-                                <span id="settingsAboutCurrentVersionText">Version </span>
-                                <span id="settingsAboutCurrentVersionValue">0.0.1-alpha.12</span>
+                                <span id="settingsAboutCurrentVersionText">Версия </span>
+                                <span id="settingsAboutCurrentVersionValue">0.0.1</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="settingsAboutButtons">
-                    <a href="https://github.com/dscalZi/HeliosLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Source (GitHub)</a>
-                    <!-- The following must be included in third-party usage. -->
-                    <!-- <a href="https://github.com/dscalzi/HeliosLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Original Source</a> -->
-                    <a href="https://github.com/dscalZi/HeliosLauncher/issues" id="settingsAboutSupportButton" class="settingsAboutButton">Support</a>
-                    <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">DevTools Console</a>
+                    <a href="https://discord.gg/cg82mjh" id="settingsAboutSupportButton" class="settingsAboutButton">Поддержка</a>
+                    <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">Консоль разработчика</a>
                 </div>
             </div>
             <div class="settingsChangelogContainer">
                 <div class="settingsChangelogContent">
                     <div class="settingsChangelogHeadline">
-                        <div class="settingsChangelogLabel">Release Notes</div>
-                        <div class="settingsChangelogTitle">Changelog</div>
+                        <div class="settingsChangelogLabel">Список релизов</div>
+                        <div class="settingsChangelogTitle">Список изменений</div>
                     </div>
                     <div class="settingsChangelogText">
-                        No Release Notes
+                        Нет доступных релизов
                     </div>
                 </div>
                 <div class="settingsChangelogActions">
-                    <a class="settingsChangelogButton settingsAboutButton" href="#">View Release Notes on GitHub</a>
+                    <a class="settingsChangelogButton settingsAboutButton" href="https://obvilionnetwork.ru/">Скачать последний релиз с сайта</a>
                 </div>
             </div>
         </div>
         <div id="settingsTabUpdate" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">Launcher Updates</span>
-                <span class="settingsTabHeaderDesc">Download, install, and review updates for the launcher.</span>
+                <span class="settingsTabHeaderText">Обновления лаунчера</span>
+                <span class="settingsTabHeaderDesc">Скачивание, установка и просмотр релизова лаунчера.</span>
             </div>
             <div id="settingsUpdateStatusContainer">
                 <div id="settingsUpdateStatusContent">
                     <div id="settingsUpdateStatusHeadline">
-                        <span id="settingsUpdateTitle">You Are Running the Latest Version</span>
+                        <span id="settingsUpdateTitle">У Вас последняя версия лаунчера</span>
                     </div>
                     <div id="settingsUpdateVersion">
                         <div id="settingsUpdateVersionCheck">&#10003;</div>
                         <div id="settingsUpdateVersionDetails">
-                            <span id="settingsUpdateVersionTitle">Stable Release</span>
+                            <span id="settingsUpdateVersionTitle">Стабильный релиз</span>
                             <div id="settingsUpdateVersionLine">
-                                <span id="settingsUpdateVersionText">Version </span>
-                                <span id="settingsUpdateVersionValue">0.0.1-alpha.18</span>
+                                <span id="settingsUpdateVersionText">Версия </span>
+                                <span id="settingsUpdateVersionValue">0.0.1</span>
                             </div>
                         </div>
                     </div>
                     <div id="settingsUpdateActionContainer">
-                        <button id="settingsUpdateActionButton">Check for Updates</button>
+                        <button id="settingsUpdateActionButton">Проверить обновления</button>
                     </div>
                 </div>
             </div>
             <div class="settingsChangelogContainer">
                 <div class="settingsChangelogContent">
                     <div class="settingsChangelogHeadline">
-                        <div class="settingsChangelogLabel">What's New</div>
-                        <div class="settingsChangelogTitle">Update Release Notes</div>
+                        <div class="settingsChangelogLabel">Что нового</div>
+                        <div class="settingsChangelogTitle">Примечания к обновлению</div>
                     </div>
                     <div class="settingsChangelogText">
-                        No Release Notes
+                        Обновления не найдены
                     </div>
                 </div>
             </div>

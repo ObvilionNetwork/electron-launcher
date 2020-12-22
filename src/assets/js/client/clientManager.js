@@ -215,15 +215,23 @@ class ClientDownloader {
          c();
       });
 
-      exec(this.getCMD(), (err, stdout, stderr) => {
-         console.log(`stdout: ${stdout}`);
-         console.log(`stderr: ${stderr}`);
-      }).addListener("exit", code => {
-         this.onExit.forEach(c => {
-            c();
-         });
-      });
-   }
+      exec(
+         this.getCMD(),
+
+         {
+            cwd: this.clientDir,
+         },
+
+         (err, stdout, stderr) => {
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+         })
+         .addListener("exit", code =>
+            this.onExit.forEach(c => {
+               c();
+            })
+         );
+      }
 
    getCMD() {
       let cmd = `"${ConfigManager.getJavaExecutable()}" `;
