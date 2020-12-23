@@ -79,19 +79,18 @@ const DEFAULT_CONFIG = {
     java: {
       minRAM: resolveMinRAM(),
       maxRAM: resolveMaxRAM(), // Dynamic
-      executable: null,
+      executable: 'java',
       jvmOptions: [
         '-XX:+UseConcMarkSweepGC',
         '-XX:+CMSIncrementalMode',
-        '-XX:-UseAdaptiveSizePolicy',
-        '-Xmn128M',
+        '-XX:-UseAdaptiveSizePolicy'
       ],
     },
     game: {
       resWidth: 1280,
       resHeight: 720,
       fullscreen: false,
-      autoConnect: true,
+      autoConnect: false,
       launchDetached: true,
     },
     launcher: {

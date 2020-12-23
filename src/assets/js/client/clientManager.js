@@ -215,6 +215,8 @@ class ClientDownloader {
          c();
       });
 
+      logger.log(this.getCMD())
+
       exec(this.getCMD(), {
             cwd: this.clientDir,
          },
@@ -233,22 +235,22 @@ class ClientDownloader {
       let cmd = `"${ConfigManager.getJavaExecutable()}" `;
       cmd += `-Xms${ConfigManager.getMinRAM()} `;
       cmd += `-Xmx${ConfigManager.getMaxRAM()} `;
-      cmd += `-Djava.library.path=${path.join(this.clientDir, 'natives')} `;
-      cmd += `-cp ${this.getClasspath()}`;
+      cmd += `-Djava.library.path="${path.join(this.clientDir, 'natives')}" `;
+      cmd += `-cp "${this.getClasspath()}" `;
       cmd += `-Duser.language=en `;
 
       cmd += `net.minecraft.launchwrapper.Launch `;
 
-      cmd += `--username ${ConfigManager.getSelectedAccount().username} `;
-      cmd += `--version ${this.client.getCore().type} ${this.client.getVersion()} `;
-      cmd += `--gameDir ${this.clientDir} `;
-      cmd += `--assetsDir  ${this.assetsDir} `;
-      cmd += `--assetIndex ${this.client.getVersion()} `;
-      cmd += `--uuid ${ConfigManager.getSelectedAccount().uuid} `;
-      cmd += `--accessToken ${ConfigManager.getSelectedAccount().accessToken} `;
-      cmd += "--userProperties [] ";
-      cmd += "--userType legacy ";
-      cmd += "--tweakClass cpw.mods.fml.common.launcher.FMLTweaker ";
+      cmd += `--username "${ConfigManager.getSelectedAccount().username}" `;
+      cmd += `--version "${this.client.getCore().type} ${this.client.getVersion()}" `;
+      cmd += `--gameDir "${this.clientDir}" `;
+      cmd += `--assetsDir  "${this.assetsDir}" `;
+      cmd += `--assetIndex "${this.client.getVersion()}" `;
+      cmd += `--uuid "${ConfigManager.getSelectedAccount().uuid}" `;
+      cmd += `--accessToken "${ConfigManager.getSelectedAccount().accessToken}" `;
+      cmd += "--userProperties \"[]\" ";
+      cmd += "--userType \"legacy\" ";
+      cmd += "--tweakClass \"cpw.mods.fml.common.launcher.FMLTweaker\" ";
 
       return cmd;
    }
@@ -257,22 +259,24 @@ class ClientDownloader {
       const libFiles = path.join(this.clientDir, 'libraries');
       const libs = fs.readdirSync(libFiles);
 
+      let cpSeparator = process.platform === 'win32' ? ';' : ':';
+
       let cp = '';
 
       for (const lib of libs) {
          const stats = fs.statSync(path.join(libFiles, lib));
          if (stats.isFile()) {
-            cp += path.join(libFiles, lib) + ';'
+            cp += path.join(libFiles, lib) + cpSeparator
          } else {
             const libs2 = fs.readdirSync(path.join(libFiles, lib));
             for (const lib2 of libs2) {
-               cp += path.join(libFiles, lib, lib2) + ';'
+               cp += path.join(libFiles, lib, lib2) + cpSeparator
             }
          }
       }
 
-      cp += path.join(this.clientDir, 'forge.jar') + ';';
-      cp += path.join(this.clientDir, 'minecraft.jar') + ';';
+      cp += path.join(this.clientDir, 'forge.jar') + cpSeparator;
+      cp += path.join(this.clientDir, 'minecraft.jar') + cpSeparator;
 
       return cp;
    }

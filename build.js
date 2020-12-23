@@ -21,6 +21,8 @@ function getCurrentPlatform() {
   }
 }
 
+const timeStart = new Date().getTime();
+
 builder.build({
   targets: (process.argv[2] != null && Platform[process.argv[2]] != null
       ? Platform[process.argv[2]]
@@ -36,14 +38,12 @@ builder.build({
       output: 'dist',
     },
     win: {
-      target: [
-        {
-          target: 'nsis',
-          arch: 'x64',
-        },
-      ],
+      target: 'nsis',
+      icon: 'src/assets/images/favicon.ico'
     },
     nsis: {
+      installerIcon: 'src/assets/images/favicon.ico',
+      uninstallerIcon: 'src/assets/images/favicon.ico',
       oneClick: false,
       perMachine: false,
       allowElevation: true,
@@ -54,7 +54,7 @@ builder.build({
       category: 'public.src-category.games',
     },
     linux: {
-      target: 'AppImage',
+      target: 'tar.gz',
       maintainer: author,
       vendor: author,
       synopsis: description,
@@ -71,7 +71,8 @@ builder.build({
     asar: true,
   },
 }).then(() => {
-  console.log('Build complete!');
+  const time = Math.round((new Date().getTime() - timeStart) / 1000);
+  console.log(`Build completed in ${time} seconds!`);
 }).catch((err) => {
   console.error('Error during build!', err);
 });
