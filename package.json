@@ -1,7 +1,7 @@
 {
   "name": "launcher",
   "productName": "ObvilionNetworkLauncher",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Node.js Minecraft Launcher for Obvilion Network",
   "author": "Obvilion Network",
   "license": "UNLICENSED",
