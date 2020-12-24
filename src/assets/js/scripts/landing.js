@@ -106,9 +106,13 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
     downloader.on('complete', () => {
       setLaunchDetails('Загрузка закончена');
 
-      setTimeout(() => {
-        remote.getCurrentWindow().hide();
-      }, 1000);
+      if (ConfigManager.getLaunchDetached()) {
+        setTimeout(() => {
+          remote.getCurrentWindow().hide();
+        }, 1000);
+      } else {
+        setLaunchDetails('Режим дебага включен');
+      }
     })
 
     downloader.on('exit', () => {

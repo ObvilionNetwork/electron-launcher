@@ -72,7 +72,7 @@
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
                     <span class="settingsFieldTitle">Закрывать лаунчер во время игры.</span>
-                    <span class="settingsFieldDesc">Помните, закрытие лаунчера приведёт к закрытию игры.</span>
+                    <span class="settingsFieldDesc">Помните, при выключенной функции закрытие лаунчера приведёт к закрытию игры.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -184,7 +184,7 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" disabled>
-                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Выбрать папку</button>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="true">Выбрать папку</button>
                     </div>
                 </div>
                 <div class="settingsFileSelDesc">Путь до Java проверяется перед запуском игры. <strong>Требуется Java 8.</strong><br>Путь должен заканчиваться на <strong>bin<%= process.platform === 'win32' ? '\\java.exe' : '/java' %></strong>.</div>

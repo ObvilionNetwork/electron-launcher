@@ -232,7 +232,7 @@ class ClientDownloader {
       }
 
    getCMD() {
-      let cmd = `"${ConfigManager.getJavaExecutable()}" `;
+      let cmd = `"${path.join(ConfigManager.getJavaExecutable(), 'bin', process.platform === 'win32' ? '\\java.exe' : '/java')}" `;
       cmd += `-Xms${ConfigManager.getMinRAM()} `;
       cmd += `-Xmx${ConfigManager.getMaxRAM()} `;
       cmd += `-Djava.library.path="${path.join(this.clientDir, 'natives')}" `;

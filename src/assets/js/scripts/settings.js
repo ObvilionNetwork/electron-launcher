@@ -157,9 +157,7 @@ async function initSettingsValues() {
     }
   });
 
-  const cmd1 = 'java -version';
-
-  exec(cmd1, (err, stdout, stderr) => {
+  exec('java -version', (err, stdout, stderr) => {
     if (stderr) {
       document.getElementById('settingsJavaExecDetails').innerText = 'Выбрано: Java ' + (stderr + '').split('\n')[0].split('"')[1];
     } else {
