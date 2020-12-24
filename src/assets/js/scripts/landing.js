@@ -100,11 +100,12 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
 
     downloader.on('download', (t) => {
       console.log(t)
-      setLaunchDetails(t.path);
+      setLaunchDetails(t.path.split('../').join(''));
     })
 
     downloader.on('complete', () => {
       setLaunchDetails('Загрузка закончена');
+      setLaunchPercentage(100, 100)
 
       if (ConfigManager.getLaunchDetached()) {
         setTimeout(() => {

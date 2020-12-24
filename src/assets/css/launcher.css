@@ -3312,6 +3312,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 3px;
     width: 265px;
     -webkit-appearance: none;
+    margin-left: 2px;
 }
 #launch_progress[value]::-webkit-progress-bar {
     background-color: transparent;
@@ -3326,6 +3327,8 @@ input:checked + .toggleSwitchSlider:before {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    width: 20vw;
+    margin-left: 2px;
 }
 
 /*******************************************************************************

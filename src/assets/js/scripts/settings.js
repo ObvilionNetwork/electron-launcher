@@ -148,9 +148,9 @@ async function initSettingsValues() {
               val = Number.parseFloat(val);
             }
 
-            v.setAttribute('value', val);
+            v.setAttribute('value', val.toFixed(2));
           } else {
-            v.setAttribute('value', Number.parseFloat(gFn()));
+            v.setAttribute('value', Number.parseFloat(gFn())).toFixed(2);
           }
         }
       }
@@ -207,9 +207,9 @@ function saveSettingsValues() {
           if (cVal === 'MinRAM' || cVal === 'MaxRAM') {
             let val = Number(v.getAttribute('value'));
             if (val % 1 > 0) {
-              val = `${val * 1000}M`;
+              val = `${(val * 1000).toFixed(0)}M`;
             } else {
-              val = `${val}G`;
+              val = `${(val).toFixed(2)}G`;
             }
 
             sFn(val);
@@ -942,17 +942,13 @@ function calculateRangeSliderMeta(v) {
   return val;
 }
 
-/**
- * Binds functionality to the ranged sliders. They're more than
- * just divs now :').
- */
 function bindRangeSlider() {
   Array.from(document.getElementsByClassName('rangeSlider')).map((v) => {
     // Reference the track (thumb).
     const track = v.getElementsByClassName('rangeSliderTrack')[0];
 
     // Set the initial slider value.
-    const value = v.getAttribute('value');
+    const value = new Number(v.getAttribute('value')).toFixed(2);
     const sliderMeta = calculateRangeSliderMeta(v);
 
     updateRangedSlider(v, value, ((value - sliderMeta.min) / sliderMeta.step) * sliderMeta.inc);

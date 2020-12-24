@@ -140,8 +140,16 @@ class Client {
       return this.assets;
    }
 
+   getJava() {
+      return this.java;
+   }
+
    getServerIP() {
       return this.address;
+   }
+
+   getJavaVersion() {
+      return this.javaVersion;
    }
 }
 
@@ -189,6 +197,12 @@ class ClientDownloader {
          c();
       });
 
+      if (!fs.existsSync(ConfigManager.getDataDirectory())) {
+         fs.mkdirSync(ConfigManager.getDataDirectory());
+         fs.mkdirSync(ConfigManager.getCommonDirectory());
+         fs.mkdirSync(ConfigManager.getInstanceDirectory());
+      }
+
       if (!fs.existsSync(this.clientDir)) {
          fs.mkdirSync(this.clientDir);
       }
@@ -210,6 +224,25 @@ class ClientDownloader {
 
       logger.info('Downloading Assets...');
       await this.downloadAll(this.client.getAssets());
+
+      if (!fs.existsSync(path.join(ConfigManager.getJavaExecutable(), 'bin', process.platform === 'win32' ? '\\java.exe' : '/java'))) {
+         if (process.platform === 'win32') {
+            if (process.arch === 'x64') {
+               logger.info('Downloading Java for Windows x64...');
+               await this.downloadAll(this.client.getJava().windows64);
+            } else {
+               logger.info('Downloading Java for Windows x32...');
+               await this.downloadAll(this.client.getJava().windows32);
+            }
+         }
+
+         if (process.platform === 'linux') {
+            logger.info('Downloading Java for Linux x64...');
+            await this.downloadAll(this.client.getJava().linux64);
+         }
+
+         ConfigManager.setJavaExecutable(path.join(ConfigManager.getCommonDirectory(), 'java', this.client.getJavaVersion()));
+      }
 
       this.onComplete.forEach(c => {
          c();
