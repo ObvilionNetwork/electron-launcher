@@ -2,6 +2,8 @@
 const os = require('os');
 const semver = require('semver');
 
+const { exec } = require('child_process');
+
 const settingsState = {
   invalid: new Set(),
 };
@@ -113,7 +115,7 @@ function initSettingsValidators() {
 /**
  * Load configuration values onto the UI. This is an automated process.
  */
-function initSettingsValues() {
+async function initSettingsValues() {
   const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]');
   Array.from(sEls).map((v, index, arr) => {
     const cVal = v.getAttribute('cValue');
@@ -154,6 +156,27 @@ function initSettingsValues() {
       }
     }
   });
+
+  const cmd1 = 'java -version';
+
+  exec(cmd1, (err, stdout, stderr) => {
+    if (stderr) {
+      document.getElementById('settingsJavaExecDetails').innerText = 'Выбрано: Java ' + (stderr + '').split('\n')[0].split('"')[1];
+    } else {
+      document.getElementById('settingsJavaExecDetails').innerText = 'Выбрано: Java ' + (stdout + '').split('\n')[0].split('"')[1];
+    }
+  });
+
+  if (ConfigManager.getJavaExecutable() === 'java') {
+    const cmd = process.platform === 'win32' ? 'echo %JAVA_HOME%' : 'readlink -ze $(which java)';
+
+    exec(cmd, (err, stdout, stderr) => {
+      if (!stderr) {
+        ConfigManager.setJavaExecutable(stdout);
+        document.getElementById('settingsJavaExecVal').value = stdout;
+      }
+    });
+  }
 }
 
 /**

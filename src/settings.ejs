@@ -184,10 +184,10 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" disabled>
-                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Выбрать папку</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">Путь до Java проверяется перед запуском игры. <strong>Требуется Java 8.</strong><br>Путь должен заканчиваться на <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
+                <div class="settingsFileSelDesc">Путь до Java проверяется перед запуском игры. <strong>Требуется Java 8.</strong><br>Путь должен заканчиваться на <strong>bin<%= process.platform === 'win32' ? '\\java.exe' : '/java' %></strong>.</div>
             </div>
             <div id="settingsJVMOptsContainer">
                 <div id="settingsJVMOptsTitle">Дополнительные JVM флаги</div>
