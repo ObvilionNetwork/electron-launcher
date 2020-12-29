@@ -72,6 +72,7 @@ exports.statusToHex = function (status) {
  * @see http://wiki.vg/Mojang_API#API_Status
  */
 exports.status = function () {
+
   return new Promise((resolve, reject) => {
     request.get('https://status.mojang.com/check',
       {

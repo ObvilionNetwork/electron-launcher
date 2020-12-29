@@ -126,6 +126,14 @@ class FileUt {
    size() {
       return fs.statSync(this.filePath).size;
    }
+
+   asyncSize() {
+      return new Promise((resolve, reject) => {
+         fs.stat(this.filePath, (e, stats) => {
+            return resolve(stats.size);
+         });
+      });
+   }
 }
 
 module.exports = FileUt;

@@ -12,17 +12,18 @@ const logger = require('../loggerutil')('%c[ClientManager]', 'color: #a02d2a; fo
 let config = null;
 
 function init() {
+   logger.info('Загрузка серверов...')
    return new Promise((resolve, reject) => {
-      const distroURL = 'https://obvilionnetwork.ru/api/servers/info';
+      const distroURL = 'http://obvilionnetwork.ru/api/servers/info';
 
       const opts = {
          url: distroURL,
-         timeout: 2500,
+         timeout: 60000,
       };
 
       const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'clients.json');
 
-      request(opts, (error, resp, body) => {
+      request.get(distroURL, opts, (error, resp, body) => {
          if (!error) {
             config = JSON.parse(body);
             fs.writeFile(distroDest, config, 'utf-8', (err) => {
@@ -33,6 +34,7 @@ function init() {
                }
             });
          } else {
+            logger.warn('Ошибка загрузки серверов');
             reject(error);
          }
       });
@@ -153,6 +155,18 @@ class ClientDownloader {
          fs.mkdirSync(this.clientDir);
       }
 
+      this.clientSize = 0;
+
+      this.client.getNatives().forEach((module) => {
+         this.clientSize += module.size;
+      });
+      this.client.getLibraries().forEach((module) => {
+         this.clientSize += module.size;
+      });
+      this.client.getAssets().forEach((module) => {
+         this.clientSize += module.size;
+      });
+
       await this.check();
 
       logger.info('Downloading Core...');
@@ -249,12 +263,46 @@ class ClientDownloader {
       //
    }
 
+   async checkPercent() {
+      let size = 0;
+
+      size += await this.getModuleSize(this.client.getNatives(), 'natives');
+
+      size += await this.getModuleSize(this.client.getLibraries(), 'libraries');
+
+      size += await this.getModuleSize(this.client.getAssets(), '../assets');
+
+      const perc = size / this.clientSize * 100;
+      return Number.parseInt(perc);
+   }
+
+   async getModuleSize(modules, name) {
+      let size = 0;
+
+      const moduleDir = new FileUt(path.join(this.clientDir, name));
+
+      if (!moduleDir.exists()) return size;
+
+      const files = moduleDir.getAllFiles();
+      for (const file of files) {
+         for (const module of modules) {
+            const moduleFile = new FileUt(path.join(this.clientDir, module.path));
+
+            if (moduleFile.getAbsolutePath() === file.getAbsolutePath()) {
+               size += await file.asyncSize();
+            }
+         }
+      }
+
+      return size;
+   }
+
    async check() {
       logger.info('Checking files...');
       await this.checkModules(this.client.getMods(), 'mods');
       await this.checkModules(this.client.getNatives(), 'natives');
       await this.checkModules(this.client.getLibraries(), 'libraries');
-      await this.checkModules(this.client.getAssets(), 'assets');
+      await this.checkModules(this.client.getAssets(), '../assets');
    }
 
    getCMD() {
@@ -315,19 +363,19 @@ class ClientDownloader {
       if (!moduleDir.exists()) return false;
 
       const files = moduleDir.getAllFiles();
-      files.forEach((file) => {
+      for (const file of files) {
          let ok = false;
 
-         modules.forEach((module) => {
+         for (const module of modules) {
             const moduleFile = new FileUt(path.join(this.clientDir, module.path));
 
             if (moduleFile.getAbsolutePath() === file.getAbsolutePath()) {
-               if (file.size() === module.size) ok = true;
+               if (await file.asyncSize() === module.size) ok = true;
             }
-         });
+         }
 
          if (!ok) file.remove();
-      });
+      }
    }
 
    async downloadAll(modules) {

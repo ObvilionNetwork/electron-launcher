@@ -98,14 +98,20 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
        ClientManager.getDistribution().getServer(ConfigManager.getSelectedServer())
     );
 
+    const upd = setInterval(async () => {
+      setLaunchPercentage(await downloader.checkPercent(), 100);
+    }, 2000);
+
     downloader.on('download', (t) => {
       console.log(t)
       setLaunchDetails(t.path.split('../').join(''));
-    })
+    });
 
     downloader.on('complete', () => {
+      clearInterval(upd);
+
       setLaunchDetails('Загрузка закончена');
-      setLaunchPercentage(100, 100)
+      setLaunchPercentage(100, 100);
 
       if (ConfigManager.getLaunchDetached()) {
         setTimeout(() => {
@@ -124,7 +130,7 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
 
       DiscordWrapper.setActivity(newActivity);
       DiscordWrapper.render();
-    })
+    });
 
     downloader.on('exit', () => {
       ClientManager.init();

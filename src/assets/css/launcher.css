@@ -2828,6 +2828,7 @@ input:checked + .toggleSwitchSlider:before {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    image-rendering: -webkit-optimize-contrast;
 }
 
 /* Avatar edit overlay. */
