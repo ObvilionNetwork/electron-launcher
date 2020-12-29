@@ -3,7 +3,7 @@ const path = require('path');
 const http = require('https');
 const request = require('request');
 
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 
 const ConfigManager = require('../configmanager');
 const FileUt = require('../utils/File');
@@ -256,20 +256,51 @@ class ClientDownloader {
 
       this.onComplete.forEach(c => c());
 
-      logger.log(this.getCMD().replace(ConfigManager.getSelectedAccount().accessToken, 'deleted'))
+      const text = this.getCMD().join(' ').replace(ConfigManager.getSelectedAccount().accessToken, 'deleted');
+      logger.log(text);
 
-      exec(this.getCMD(), {
-            cwd: this.clientDir,
-         },
-         (err, stdout, stderr) => {
-            this.check();
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
-         })
-         .addListener("exit", code =>
-            this.onExit.forEach(c => c())
-         );
-      }
+      fs.writeFileSync(path.join(this.clientDir, 'latest.log'), text + '\n');
+
+      const out = fs.openSync(path.join(this.clientDir, 'latest.log'), 'a');
+      const err = fs.openSync(path.join(this.clientDir, 'latest.log'), 'a');
+
+      const args = this.getCMD();
+      const cmd = this.getCMD()[0];
+
+      args.splice(0, 1);
+
+      const child = spawn(cmd, args, {
+         cwd: this.clientDir,
+         detached: true,
+         stdio: [ 'ignore', out, err ]
+      });
+
+      child.on('exit', (code, signal) => {
+         console.log('Child exited with code: ' +code+' and signal: '+signal);
+         this.onExit.forEach(c => c())
+      });
+
+      child.unref();
+
+
+      /* Лимит логов 1МБ */
+
+      // exec(this.getCMD(), {
+      //       cwd: this.clientDir,
+      //       detached: true,
+      //       stdio: [ 'ignore', out, err ]
+      //    },
+      //    (err, stdout, stderr) => {
+      //       this.check();
+      //       //console.log(`stdout: ${stdout}`);
+      //       //console.log(`stderr: ${stderr}`);
+      //    })
+      //    .addListener('exit', (code, signal) => {
+      //       console.log('Child exited with code ' + code + ' and signal ' + signal);
+      //        this.onExit.forEach(c => c())
+      //    });
+      //
+   }
 
    async check() {
       logger.info('Checking files...');
@@ -280,25 +311,28 @@ class ClientDownloader {
    }
 
    getCMD() {
-      let cmd = `"${path.join(ConfigManager.getJavaExecutable(), 'bin', process.platform === 'win32' ? '\\java.exe' : '/java')}" `;
-      cmd += `-Xms${ConfigManager.getMinRAM()} `;
-      cmd += `-Xmx${ConfigManager.getMaxRAM()} `;
-      cmd += `-Djava.library.path="${path.join(this.clientDir, 'natives')}" `;
-      cmd += `-cp "${this.getClasspath()}" `;
-      cmd += `-Duser.language=en `;
+      let cmd = [];
 
-      cmd += `net.minecraft.launchwrapper.Launch `;
+      cmd.push( path.join(ConfigManager.getJavaExecutable(), 'bin', process.platform === 'win32' ? '\\java.exe' : '/java') );
 
-      cmd += `--username "${ConfigManager.getSelectedAccount().username}" `;
-      cmd += `--version "${this.client.getCore().type} ${this.client.getVersion()}" `;
-      cmd += `--gameDir "${this.clientDir}" `;
-      cmd += `--assetsDir  "${this.assetsDir}" `;
-      cmd += `--assetIndex "${this.client.getVersion()}" `;
-      cmd += `--uuid "${ConfigManager.getSelectedAccount().uuid}" `;
-      cmd += `--accessToken "${ConfigManager.getSelectedAccount().accessToken}" `;
-      cmd += "--userProperties \"[]\" ";
-      cmd += "--userType \"legacy\" ";
-      cmd += "--tweakClass \"cpw.mods.fml.common.launcher.FMLTweaker\" ";
+      cmd.push( `-Xms${ConfigManager.getMinRAM()}` );
+      cmd.push( `-Xmx${ConfigManager.getMaxRAM()}` );
+      cmd.push( `-Djava.library.path=${path.join(this.clientDir, 'natives')}` );
+      cmd.push( `-cp`, `${this.getClasspath()}` );
+      cmd.push( `-Duser.language=en` );
+
+      cmd.push( `net.minecraft.launchwrapper.Launch` );
+
+      cmd.push( `--username`, `${ConfigManager.getSelectedAccount().username}` );
+      cmd.push( `--version`, `${this.client.getCore().type} ${this.client.getVersion()}` );
+      cmd.push( `--gameDir`, `${this.clientDir}` );
+      cmd.push( `--assetsDir`, `${this.assetsDir}` );
+      cmd.push( `--assetIndex`, `${this.client.getVersion()}` );
+      cmd.push( `--uuid`, `${ConfigManager.getSelectedAccount().uuid}` );
+      cmd.push( `--accessToken`, `${ConfigManager.getSelectedAccount().accessToken}` );
+      cmd.push( "--userProperties", "[]" );
+      cmd.push( "--userType", "legacy" );
+      cmd.push( "--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker" );
 
       return cmd;
    }
@@ -341,15 +375,11 @@ class ClientDownloader {
             const moduleFile = new FileUt(path.join(this.clientDir, module.path));
 
             if (moduleFile.getAbsolutePath() === file.getAbsolutePath()) {
-               if (file.size() === module.size) {
-                  ok = true;
-               }
+               if (file.size() === module.size) ok = true;
             }
          });
 
-         if (!ok) {
-            file.remove();
-         }
+         if (!ok) file.remove();
       });
    }
 
@@ -381,9 +411,7 @@ class ClientDownloader {
 
          const file = fs.createWriteStream(dest, { flags: "wx" });
 
-         this.onDownload.forEach((c) => {
-            c(module);
-         });
+         this.onDownload.forEach((c) => c(module));
          const request = http.get('https://obvilionnetwork.ru/api/files/' + module.link, response => {
             if (response.statusCode === 200) {
                response.pipe(file);
