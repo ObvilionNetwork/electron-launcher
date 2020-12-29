@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require("child_process");
 
-class File {
+class FileUt {
    filePath = '';
 
    /**
@@ -45,8 +45,27 @@ class File {
       const files = fs.readdirSync(this.filePath);
 
       return files.map((file) => {
-         return new File(path.join(this.filePath, file));
+         return new FileUt(path.join(this.filePath, file));
       });
+   }
+
+   getAllFiles() {
+      if (!this.isDirectory()) return [];
+
+      const allFiles = [];
+      const files = fs.readdirSync(this.filePath).map((file) => {
+         return new FileUt(path.join(this.filePath, file));
+      });
+
+      files.forEach(file => {
+         if (file.isFile()) return allFiles.push(file);
+
+         file.getAllFiles().forEach(file2 => {
+            return allFiles.push(file2);
+         });
+      });
+
+      return allFiles;
    }
 
    /**
@@ -94,14 +113,19 @@ class File {
       return fs.statSync(this.filePath).mtime;
    }
 
-   length() {
+   remove() {
+      if (this.isDirectory()) {
+         this.getAllFiles().forEach(file => {
+            file.remove();
+         });
+      } else {
+         return fs.unlinkSync(this.getAbsolutePath());
+      }
+   }
+
+   size() {
       return fs.statSync(this.filePath).size;
    }
 }
 
-const test = new File('../world');
-
-console.log(test)
-console.log(test.getFiles().map((file) => {
-   return file.getPath();
-}))
+module.exports = FileUt;

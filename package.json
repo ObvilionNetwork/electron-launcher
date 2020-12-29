@@ -1,7 +1,7 @@
 {
   "name": "launcher",
   "productName": "ObvilionNetworkLauncher",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Node.js Minecraft Launcher for Obvilion Network",
   "author": "Obvilion Network",
   "license": "UNLICENSED",
@@ -12,6 +12,7 @@
     "cidarwin": "node build.js MAC",
     "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true node build.js",
     "dist:win": "npm run dist -- WINDOWS",
+    "dist:win32": "npm run dist -- WINDOWS",
     "dist:mac": "npm run dist -- MAC",
     "dist:linux": "npm run dist -- LINUX",
     "lint": "eslint ."

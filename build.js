@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 const builder = require('electron-builder');
 const {
   name, productName, description, author,
@@ -38,7 +36,14 @@ builder.build({
       output: 'dist',
     },
     win: {
-      target: 'nsis',
+      target: [
+        {
+          target: 'nsis',
+          arch: [
+            'ia32'
+          ]
+        }
+      ],
       icon: 'src/assets/images/favicon.ico'
     },
     nsis: {

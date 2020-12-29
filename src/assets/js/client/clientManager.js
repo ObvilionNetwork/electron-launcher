@@ -6,6 +6,7 @@ const request = require('request');
 const { exec } = require('child_process');
 
 const ConfigManager = require('../configmanager');
+const FileUt = require('../utils/File');
 const logger = require('../loggerutil')('%c[ClientManager]', 'color: #a02d2a; font-weight: bold');
 
 let config = null;
@@ -193,9 +194,7 @@ class ClientDownloader {
    }
 
    async start() {
-      this.onStart.forEach(c => {
-         c();
-      });
+      this.onStart.forEach(c => c());
 
       if (!fs.existsSync(ConfigManager.getDataDirectory())) {
          fs.mkdirSync(ConfigManager.getDataDirectory());
@@ -207,23 +206,28 @@ class ClientDownloader {
          fs.mkdirSync(this.clientDir);
       }
 
+      await this.check();
+
       logger.info('Downloading Core...');
       await this.download(this.client.getCore());
-
-      logger.info('Downloading Libraries...');
-      await this.downloadAll(this.client.getLibraries());
 
       logger.info('Downloading Natives...');
       await this.downloadAll(this.client.getNatives());
 
+      logger.info('Downloading Libraries...');
+      await this.downloadAll(this.client.getLibraries());
+
+      if (!new FileUt(path.join(this.clientDir, 'mods')).exists()) {
+         logger.info('Downloading Config files...');
+         await this.downloadAll(this.client.getOther());
+      }
+
       logger.info('Downloading Mods...');
       await this.downloadAll(this.client.getMods());
 
-      logger.info('Downloading Other files...');
-      await this.downloadAll(this.client.getOther());
-
       logger.info('Downloading Assets...');
       await this.downloadAll(this.client.getAssets());
+
 
       if (!fs.existsSync(path.join(ConfigManager.getJavaExecutable(), 'bin', process.platform === 'win32' ? '\\java.exe' : '/java'))) {
          if (process.platform === 'win32') {
@@ -239,30 +243,41 @@ class ClientDownloader {
          if (process.platform === 'linux') {
             logger.info('Downloading Java for Linux x64...');
             await this.downloadAll(this.client.getJava().linux64);
+
+            exec('chmod +x java', {
+               cwd: path.join(ConfigManager.getCommonDirectory(), 'java', this.client.getJavaVersion(), 'bin'),
+            });
          }
 
          ConfigManager.setJavaExecutable(path.join(ConfigManager.getCommonDirectory(), 'java', this.client.getJavaVersion()));
       }
 
-      this.onComplete.forEach(c => {
-         c();
-      });
+      await this.check();
 
-      logger.log(this.getCMD())
+      this.onComplete.forEach(c => c());
+
+      logger.log(this.getCMD().replace(ConfigManager.getSelectedAccount().accessToken, 'deleted'))
 
       exec(this.getCMD(), {
             cwd: this.clientDir,
          },
          (err, stdout, stderr) => {
+            this.check();
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
          })
          .addListener("exit", code =>
-            this.onExit.forEach(c => {
-               c();
-            })
+            this.onExit.forEach(c => c())
          );
       }
+
+   async check() {
+      logger.info('Checking files...');
+      await this.checkModules(this.client.getMods(), 'mods');
+      await this.checkModules(this.client.getNatives(), 'natives');
+      await this.checkModules(this.client.getLibraries(), 'libraries');
+      await this.checkModules(this.client.getAssets(), 'assets');
+   }
 
    getCMD() {
       let cmd = `"${path.join(ConfigManager.getJavaExecutable(), 'bin', process.platform === 'win32' ? '\\java.exe' : '/java')}" `;
@@ -314,6 +329,30 @@ class ClientDownloader {
       return cp;
    }
 
+   async checkModules(modules, name) {
+      const moduleDir = new FileUt(path.join(this.clientDir, name));
+      if (!moduleDir.exists()) return false;
+
+      const files = moduleDir.getAllFiles();
+      files.forEach((file) => {
+         let ok = false;
+
+         modules.forEach((module) => {
+            const moduleFile = new FileUt(path.join(this.clientDir, module.path));
+
+            if (moduleFile.getAbsolutePath() === file.getAbsolutePath()) {
+               if (file.size() === module.size) {
+                  ok = true;
+               }
+            }
+         });
+
+         if (!ok) {
+            file.remove();
+         }
+      });
+   }
+
    async downloadAll(modules) {
       for (const module of modules) {
          await this.download(module);
@@ -345,7 +384,7 @@ class ClientDownloader {
          this.onDownload.forEach((c) => {
             c(module);
          });
-         const request = http.get(module.link, response => {
+         const request = http.get('https://obvilionnetwork.ru/api/files/' + module.link, response => {
             if (response.statusCode === 200) {
                response.pipe(file);
             } else {
