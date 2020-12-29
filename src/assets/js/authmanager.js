@@ -8,15 +8,16 @@ const loggerSuccess = LoggerUtil('%c[AuthManager]', 'color: #209b07; font-weight
 /**
  * Add an account.
  *
- * @param {string} username The account username (email if migrated).
+ * @param {string} login The account username (email if migrated).
  * @param {string} password The account password.
  * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
-exports.addAccount = async function (username, password) {
+exports.addAccount = async function (login, password) {
   try {
-    const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken());
+    const session = await Mojang.authenticate(login, password, ConfigManager.getClientToken());
     if (session.token) {
       // TODO: add displayUsername
+      const username = session.username ? session.username : login;
 
       const ret = ConfigManager.addAuthAccount(session.uuid, session.token, username, username);
 
