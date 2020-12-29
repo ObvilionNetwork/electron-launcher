@@ -22,69 +22,16 @@ function init() {
 
       const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'clients.json');
 
-      const temp = {
-         servers: [
-            {
-               name: 'HiTech',
-               id: 'hitech',
-               description: 'test',
-               version: '1.7.10',
-               icon: 'https://cdn.discordapp.com/icons/652249606599737391/588419cb59d8ece0062a3f1dc6b88751.png?size=512',
-               address: 'obvilionnetwork.ru:25565',
-               core: {
-                  link: 'https://obvilionnetwork.ru/api/files/clients/HiTech/forge.jar',
-                  path: 'forge.jar',
-                  size: 3018833,
-                  type: 'Forge'
-               },
-               libraries: [
-                  {
-                     link: 'https://obvilionnetwork.ru/api/files/clients/HiTech/libraries/authlib-1.5.16.jar',
-                     path: 'libraries/authlib-1.5.16.jar',
-                     size: 61936,
-                  },
-                  {
-                     link: 'https://obvilionnetwork.ru/api/files/clients/HiTech/libraries/codecjorbis-20101023.jar',
-                     path: 'libraries/codecjorbis-20101023.jar',
-                     size: 103871,
-                  },
-               ],
-               natives: [
-                  {
-                     link: 'https://obvilionnetwork.ru/api/files/clients/HiTech/natives/OpenAL32.dll',
-                     path: 'natives/OpenAL32.dll',
-                     size: 390144,
-                  },
-               ],
-               mods: [
-                  {
-                     link: 'https://obvilionnetwork.ru/api/files/clients/HiTech/mods/advancedmachinesas-1.7.10.jar',
-                     path: 'mods/advancedmachinesas-1.7.10.jar',
-                     size: 390144,
-                  },
-               ]
-            },
-            {
-               name: 'Test',
-               id: 'test',
-               description: 'test',
-               version: '1.7.10',
-               icon: 'https://im0-tub-by.yandex.net/i?id=de283b281aa17181aab5115b594978cc&n=13&exp=1',
-            },
-         ]
-      }
-
       request(opts, (error, resp, body) => {
          if (!error) {
-            fs.writeFile(distroDest, temp, 'utf-8', (err) => {
+            config = JSON.parse(body);
+            fs.writeFile(distroDest, config, 'utf-8', (err) => {
                if (!err) {
-                  config = JSON.parse(body);
-                  resolve(Distribution.fromJSON(temp));
+                  resolve(Distribution.fromJSON(config));
                } else {
                   reject(err);
                }
             });
-
          } else {
             reject(error);
          }
