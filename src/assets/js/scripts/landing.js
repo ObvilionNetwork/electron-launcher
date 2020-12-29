@@ -114,12 +114,34 @@ document.getElementById('launch_button').addEventListener('click', (e) => {
       } else {
         setLaunchDetails('Режим дебага включен');
       }
+
+      const newActivity = {
+        details: 'Сервер HiTech',
+        state: `Игрок: ${ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName}`,
+        startTimestamp: DiscordWrapper.getActivity().startTimestamp,
+        largeImageKey: 'logo',
+      };
+
+      DiscordWrapper.setActivity(newActivity);
+      DiscordWrapper.render();
     })
 
     downloader.on('exit', () => {
       ClientManager.init();
+
+      // Show launcher
       remote.getCurrentWindow().show();
       toggleLaunchArea(false);
+
+      const newActivity = {
+        details: 'Выбирает сервер',
+        state: `Игрок: ${ConfigManager.getAuthAccounts()[Object.keys(ConfigManager.getAuthAccounts())[0]].displayName}`,
+        startTimestamp: DiscordWrapper.getActivity().startTimestamp,
+        largeImageKey: 'logo',
+      };
+
+      DiscordWrapper.setActivity(newActivity);
+      DiscordWrapper.render();
     });
 
     downloader.start();
