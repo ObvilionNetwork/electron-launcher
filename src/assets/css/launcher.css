@@ -2828,7 +2828,13 @@ input:checked + .toggleSwitchSlider:before {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    image-rendering: -webkit-optimize-contrast;
+    
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
 }
 
 /* Avatar edit overlay. */
