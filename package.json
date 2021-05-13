@@ -1,10 +1,10 @@
 {
   "name": "launcher",
   "productName": "ObvilionNetworkLauncher",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "description": "A Minecraft Launcher for Obvilion Network",
   "author": "Obvilion Network",
-  "license": "UNLICENSED",
+  "license": "FULL",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -18,19 +18,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "adm-zip": "^0.4.16",
-    "async": "^3.2.0",
     "discord-rpc": "^3.1.4",
     "ejs": "^3.1.5",
     "ejs-electron": "^2.1.1",
     "electron-updater": "^4.3.5",
-    "fs-extra": "^9.0.1",
     "github-syntax-dark": "^0.5.0",
     "jquery": "^3.5.1",
-    "request": "^2.88.2",
-    "semver": "^7.3.2",
-    "tar-fs": "^2.1.1",
-    "winreg": "^1.2.4"
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",

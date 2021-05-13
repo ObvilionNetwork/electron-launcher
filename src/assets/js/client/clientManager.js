@@ -166,6 +166,14 @@ class ClientDownloader {
       this.client.getAssets().forEach((module) => {
          this.clientSize += module.size;
       });
+      this.client.getMods().forEach((module) => {
+         this.clientSize += module.size;
+      });
+
+      this.realClientSize = await this.getModuleSize(this.client.getMods(), 'mods');
+      this.realClientSize += await this.getModuleSize(this.client.getAssets(), '../assets');
+      this.realClientSize += await this.getModuleSize(this.client.getLibraries(), 'libraries');
+      this.realClientSize += await this.getModuleSize(this.client.getNatives(), 'natives');
 
       await this.check();
 
@@ -264,16 +272,8 @@ class ClientDownloader {
    }
 
    async checkPercent() {
-      let size = 0;
-
-      size += await this.getModuleSize(this.client.getNatives(), 'natives');
-
-      size += await this.getModuleSize(this.client.getLibraries(), 'libraries');
-
-      size += await this.getModuleSize(this.client.getAssets(), '../assets');
-
-      const perc = size / this.clientSize * 100;
-      return Number.parseInt(perc);
+      const perc = this.realClientSize / this.clientSize * 100;
+      return Math.round(perc);
    }
 
    async getModuleSize(modules, name) {
@@ -327,7 +327,7 @@ class ClientDownloader {
       cmd.push( `--accessToken`, `${ConfigManager.getSelectedAccount().accessToken}` );
       cmd.push( "--userProperties", "[]" );
       cmd.push( "--userType", "legacy" );
-      cmd.push( "--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker" );
+      cmd.push( "--tweakClass", this.client.getVersion() === "1.7.10" ? "cpw.mods.fml.common.launcher.FMLTweaker" : "net.minecraftforge.fml.common.launcher.FMLTweaker");
 
       return cmd;
    }
@@ -424,6 +424,7 @@ class ClientDownloader {
          });
 
          file.on("finish", () => {
+            this.realClientSize += module.size;
             resolve();
          });
 
