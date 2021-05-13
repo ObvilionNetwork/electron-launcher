@@ -53,8 +53,10 @@ function setLaunchDetails(details) {
  * @param {number} max The total size.
  * @param {number|string} percent Optional. The percentage to display on the progress label.
  */
-function setLaunchPercentage(value, max, percent = ((value / max) * 100)) {
+function setLaunchPercentage(value, max, percent = Math.round((value / max) * 100)) {
   launch_progress.setAttribute('max', max);
+  if (value > max) value = max;
+
   launch_progress.setAttribute('value', value);
   launch_progress_label.innerHTML = `${percent}%`;
 }
