@@ -61,7 +61,7 @@ exports.getAbsoluteMaxRAM = function () {
 
 function resolveMaxRAM() {
   const mem = os.totalmem();
-  return mem >= 8000000000 ? '2700M' : (mem >= 6000000000 ? '2000M' : (mem >= 4000000000 ? '1300M' : '1000M'));
+  return mem >= 8000000000 ? '2700M' : (mem >= 6000000000 ? '2000M' : (mem >= 4000000000 ? '1300M' : (mem >= 2000000000 ? '1000M' : '700M')));
 }
 
 function resolveMinRAM() {
@@ -497,6 +497,9 @@ exports.setMinRAM = function (minRAM) {
  * @returns {string} The maximum amount of memory for JVM initialization.
  */
 exports.getMaxRAM = function (def = false) {
+  if (def) {
+    logger.info("Озу установлена на дефолт")
+  }
   return !def ? config.settings.java.maxRAM : resolveMaxRAM();
 };
 
